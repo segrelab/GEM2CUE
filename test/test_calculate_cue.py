@@ -15,7 +15,7 @@ class TestCalculateCUE(unittest.TestCase):
         out_value = gem2cue.calculate_cue.rCUE(model, co2_rxn='EX_co2_e', return_sol=False)
 
         # Make sure that what came out is exactly what expected
-        comparison_value = -9999 # FIXME: Put in a real value
+        comparison_value = 0.6198361114965837
         self.assertEqual(out_value, comparison_value)
 
 if __name__ == '__main__':
