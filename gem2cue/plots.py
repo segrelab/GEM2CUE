@@ -1,4 +1,4 @@
-import matplotlib as plt
+import matplotlib.pyplot as plt
 
 def boxplot(data, title, out_dir, file_name):
     """Take a list of CUE values, plot them as a boxplot, and save to the 
@@ -13,10 +13,8 @@ def boxplot(data, title, out_dir, file_name):
     Returns:
         Nothing, saves figure file to the output directory
     """
-    fig = plt.figure(figsize =(10, 7))
- 
-    # Creating axes instance
-    ax = fig.add_axes([0, 0, 1, 1])
+    # Make the figure, create axes instance
+    fig, ax = plt.subplots()
 
     # Adding title
     ax.set_title(title)
@@ -26,6 +24,7 @@ def boxplot(data, title, out_dir, file_name):
 
     # Axis Labels
     ax.set_ylabel('CUE')
+    ax.axes.xaxis.set_visible(False)
 
     # If the output directory does not exsit, make it
     import os
