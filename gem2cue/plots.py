@@ -41,7 +41,7 @@ def boxplot(data, title, out_dir, file_name):
     plt.close()
 
 
-def env_conditions_line_graphs(model_list, title, out_dir, file_name):
+def env_conditions_line_graphs(model_list, nutrient_list, title, out_dir, file_name):
     """
     
     Args:
@@ -60,7 +60,7 @@ def env_conditions_line_graphs(model_list, title, out_dir, file_name):
 
         # Save CUE for each nutrient and o2 concentration pair in a data frame
         data = []
-        for nutrient in ['glc']: # TODO: Make the nutrients we are interested in a list
+        for nutrient in nutrient_list:
             for nutrient_conc in range(10, 21):
                 # Update the glucose in the medium
                 medium = model.medium

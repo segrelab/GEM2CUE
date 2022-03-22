@@ -6,6 +6,7 @@ def pipeline(in_dir: str, out_dir: str = './results', boxplot: bool = True,
              boxplot_title: str = "CUE Value for All Strains",
              boxplot_file_name: str = "CUE_boxplot",
              env_conditions_line_graphs: bool = True,
+             nutrient_list = ['glc'],
              env_conditions_line_graphs_title: str = 'CUE with Variying Media and Oxygen Concentrations',
              env_conditions_line_graphs_file_name: str = 'CUE_media_O2'
             ):
@@ -46,7 +47,7 @@ def pipeline(in_dir: str, out_dir: str = './results', boxplot: bool = True,
 
     # Environmental Line Graphs
     if env_conditions_line_graphs:
-        gem2cue.plots.env_conditions_line_graphs(model_list, env_conditions_line_graphs_title, out_dir, env_conditions_line_graphs_file_name)
+        gem2cue.plots.env_conditions_line_graphs(model_list, nutrient_list, env_conditions_line_graphs_title, out_dir, env_conditions_line_graphs_file_name)
 
     # Return values
     return(CUE_values)
