@@ -7,7 +7,7 @@ def pipeline(in_dir: str, out_dir: str = './results', boxplot: bool = True,
              boxplot_file_name: str = "CUE_boxplot",
              env_conditions_line_graphs: bool = True,
              env_conditions_line_graphs_title: str = 'CUE with Variying Media and Oxygen Concentrations',
-             env_conditions_line_graphs_file_name: str = 'CUE_media_02'
+             env_conditions_line_graphs_file_name: str = 'CUE_media_O2'
             ):
     """Pipeline to do all of the analysis/make all of the figures possible
     
