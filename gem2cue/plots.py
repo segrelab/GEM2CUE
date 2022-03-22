@@ -78,6 +78,12 @@ def env_conditions_line_graphs(model_list, title, out_dir, file_name):
 
         # Plot
         g = sns.relplot(x='nutrient_conc', y='CUE', hue='nutrient', col='o2', data=df, kind='line', marker='o', height=3)
+
+        # Add overall title to replot
+        g.fig.suptitle(title + " for " + model.name)
+
+        # Adjust subplots so that titles don't overlap
+        g.fig.subplots_adjust(top = 0.85)
         
         # If the output directory does not exsit, make it
         if not os.path.exists(out_dir):
