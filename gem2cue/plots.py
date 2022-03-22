@@ -1,5 +1,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
+import seaborn as sns
+import os
 
 import gem2cue.calculate_cue
 
@@ -30,7 +33,6 @@ def boxplot(data, title, out_dir, file_name):
     ax.axes.xaxis.set_visible(False)
 
     # If the output directory does not exsit, make it
-    import os
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
 
@@ -71,5 +73,16 @@ def env_conditions_line_graphs(model_list, title, out_dir, file_name):
                            'co2': sol.fluxes.EX_co2_e, 'CUE': cue}
                     data.append(row)
 
+        # Convert results to a data fram
+        df = pd.DataFrame(data)
+
         # Plot
-        print(data)
+        g = sns.relplot(x='glc', y='cue', hue='vm', col='o2', data=df, kind='line', marker='o', height=3)
+        
+        # If the output directory does not exsit, make it
+        if not os.path.exists(out_dir):
+            os.makedirs(out_dir)
+
+        # Save
+        plt.savefig(out_dir + "/" + file_name + "_" + model + ".png")
+        plt.close()
