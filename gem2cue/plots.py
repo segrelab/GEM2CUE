@@ -84,6 +84,9 @@ def env_conditions_line_graphs(model_list, title, out_dir, file_name):
 
         # Adjust subplots so that titles don't overlap
         g.fig.subplots_adjust(top = 0.85)
+
+        # Set the x axis label
+        g.set_xlabels("Nutrient Concentration\n (mol / [1 gDW * 24 h])")
         
         # If the output directory does not exsit, make it
         if not os.path.exists(out_dir):
