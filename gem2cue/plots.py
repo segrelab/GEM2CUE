@@ -77,12 +77,12 @@ def env_conditions_line_graphs(model_list, title, out_dir, file_name):
         df = pd.DataFrame(data)
 
         # Plot
-        g = sns.relplot(x='glc', y='cue', hue='vm', col='o2', data=df, kind='line', marker='o', height=3)
+        g = sns.relplot(x='nutrient_conc', y='CUE', hue='nutrient', col='o2', data=df, kind='line', marker='o', height=3)
         
         # If the output directory does not exsit, make it
         if not os.path.exists(out_dir):
             os.makedirs(out_dir)
 
         # Save
-        plt.savefig(out_dir + "/" + file_name + "_" + model + ".png")
+        plt.savefig(out_dir + "/" + file_name + "_" + model.name + ".png")
         plt.close()
