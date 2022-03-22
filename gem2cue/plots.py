@@ -51,6 +51,13 @@ def env_conditions_line_graphs(model_list, title, out_dir, file_name):
     """
     # Make a set of plots for each individiual model
     for model in model_list:
+        # Get the name of the model, if there is no name- call it no name
+        # TODO: Throw a warning because if you have multiple models with no name you will overwrite results
+        if model.name == '':
+            name = 'Unknown Model'
+        else:
+            name = model.name
+
         # Save CUE for each nutrient and o2 concentration pair in a data frame
         data = []
         for nutrient in ['glc']: # TODO: Make the nutrients we are interested in a list
@@ -80,7 +87,7 @@ def env_conditions_line_graphs(model_list, title, out_dir, file_name):
         g = sns.relplot(x='nutrient_conc', y='CUE', hue='nutrient', col='o2', data=df, kind='line', marker='o', height=3)
 
         # Add overall title to replot
-        g.fig.suptitle(title + " for " + model.name)
+        g.fig.suptitle(title + " for " + name)
 
         # Adjust subplots so that titles don't overlap
         g.fig.subplots_adjust(top = 0.85)
@@ -93,5 +100,5 @@ def env_conditions_line_graphs(model_list, title, out_dir, file_name):
             os.makedirs(out_dir)
 
         # Save
-        plt.savefig(out_dir + "/" + file_name + "_" + model.name + ".png")
+        plt.savefig(out_dir + "/" + file_name + "_" + name + ".png")
         plt.close()
