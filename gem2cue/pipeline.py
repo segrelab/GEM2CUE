@@ -2,7 +2,8 @@ import gem2cue.calculate_cue
 import gem2cue.work_w_dirs
 import gem2cue.plots
 
-def pipeline(in_dir: str, out_dir: str = './results', boxplot: bool = True, 
+def pipeline(in_dir: str, out_dir: str = './results', report: bool = True, 
+             boxplot: bool = True, 
              boxplot_title: str = "CUE Value for All Strains",
              boxplot_file_name: str = "CUE_boxplot",
              env_conditions_line_graphs: bool = True,
@@ -41,13 +42,26 @@ def pipeline(in_dir: str, out_dir: str = './results', boxplot: bool = True,
     # Get a list of just the CUE values
     data = list(CUE_values.values())
 
+    # Start a report file
+    if report:
+        # Creating an HTML file
+        Func = open("report.html","w")
+        
+        # Adding input data to the HTML file
+        Func.write("<html>\n<head>\n<title> \nOutput Data in an HTML file \
+                </title>\n</head> <body><h1>Welcome to <u>GeeksforGeeks</u></h1>\
+                \n<h2>A <u>CS</u> Portal for Everyone</h2> \n</body></html>")
+              
+        # Saving the data into the HTML file
+        Func.close()
+
     # Boxplot
     if boxplot:
-        gem2cue.plots.boxplot(data, boxplot_title, out_dir, boxplot_file_name)
+        gem2cue.plots.boxplot(data, boxplot_title, out_dir, boxplot_file_name, report)
 
     # Environmental Line Graphs
     if env_conditions_line_graphs:
-        gem2cue.plots.env_conditions_line_graphs(model_list, nutrient_list, env_conditions_line_graphs_title, out_dir, env_conditions_line_graphs_file_name)
+        gem2cue.plots.env_conditions_line_graphs(model_list, nutrient_list, env_conditions_line_graphs_title, out_dir, env_conditions_line_graphs_file_name, report)
 
     # Return values
     return(CUE_values)
