@@ -56,7 +56,7 @@ def env_conditions_line_graphs(model_list, title, out_dir, file_name):
                 # Update the glucose in the medium
                 medium = model.medium
                 # Need to look up the reaction name to do nutrients other than glucose
-                medium['EX_glc_D_e'] = nutrient_conc
+                medium['EX_glc__D_e'] = nutrient_conc
                 for o2 in np.linspace(0, 25, 5):
                     # Update the oxygen in the medium
                     medium['EX_o2_e'] = o2
