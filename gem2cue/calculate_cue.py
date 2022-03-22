@@ -12,7 +12,10 @@ def atomExchangeMetabolite(model, atom='C'):
         ex_atoms (dict): Dictionary with the IDs as the rxn names, and the
             values as the number of atoms associates
     """
-    ex_atoms = {r.id: m.elements[atom] for m in model.metabolites for r in m.reactions if atom in m.elements if r.compartments == {'C_e'}}
+    # FIXME: This is where the issue is
+    # compartment for CarveMe models is C_e
+    # Compartment for BiGG models is e
+    ex_atoms = {r.id: m.elements[atom] for m in model.metabolites for r in m.reactions if atom in m.elements if r.compartments == {'e'}}
     
     return ex_atoms
 
