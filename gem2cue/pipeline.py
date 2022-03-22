@@ -45,7 +45,7 @@ def pipeline(in_dir: str, out_dir: str = './results', boxplot: bool = True,
 
     # Environmental Line Graphs
     if env_conditions_line_graphs:
-        gem2cue.plots.env_conditions_line_graphs(data, env_conditions_line_graphs_title, out_dir, env_conditions_line_graphs_file_name)
+        gem2cue.plots.env_conditions_line_graphs(model_list, env_conditions_line_graphs_title, out_dir, env_conditions_line_graphs_file_name)
 
     # Return values
     return(CUE_values)
