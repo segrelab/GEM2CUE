@@ -2,9 +2,9 @@ import gem2cue.calculate_cue
 import gem2cue.work_w_dirs
 import gem2cue.plots
 
-def pipeline(in_dir: str, out_dir:str = './results', boxplot=True, 
-             boxplot_title = "CUE Value for All Strains",
-             boxplot_file_name = "CUE_boxplot"):
+def pipeline(in_dir: str, out_dir: str = './results', boxplot: bool =True, 
+             boxplot_title: str = "CUE Value for All Strains",
+             boxplot_file_name: str = "CUE_boxplot"):
     """Pipeline to do all of the analysis/make all of the figures possible
     
     Args:
