@@ -6,8 +6,8 @@ def pipeline(in_dir: str, out_dir: str = './results', boxplot: bool = True,
              boxplot_title: str = "CUE Value for All Strains",
              boxplot_file_name: str = "CUE_boxplot",
              env_conditions_line_graphs: bool = True,
-             env_conditions_line_graphs_title: str = 'CUE with Variying Media and Oxygen Concentrations, and Maintenance Flux',
-             env_conditions_line_graphs_file_name: str = 'CUE_media_02_maintenance'
+             env_conditions_line_graphs_title: str = 'CUE with Variying Media and Oxygen Concentrations',
+             env_conditions_line_graphs_file_name: str = 'CUE_media_02'
             ):
     """Pipeline to do all of the analysis/make all of the figures possible
     
@@ -22,7 +22,8 @@ def pipeline(in_dir: str, out_dir: str = './results', boxplot: bool = True,
         env_conditions_line_graphs_file_name (str): file name for the line grpahs figure
         
     Returns:
-        CUE_values (dict): Keys = model id, values = the CUE value"""
+        CUE_values (dict): Keys = model id, values = the CUE value
+    """
     # List all of the files in the directory
     file_list = gem2cue.work_w_dirs.list_model_files(in_dir)
 
