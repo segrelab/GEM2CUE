@@ -33,7 +33,8 @@ def pipeline(in_dir: str, out_dir:str = './results', boxplot=True,
     data = list(CUE_values.values())
 
     # Boxplot
-    gem2cue.plots.boxplot(data, boxplot_title, out_dir, boxplot_file_name)
+    if boxplot:
+        gem2cue.plots.boxplot(data, boxplot_title, out_dir, boxplot_file_name)
 
     # Return values
     return(CUE_values)
