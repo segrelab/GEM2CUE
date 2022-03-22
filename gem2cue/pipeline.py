@@ -6,7 +6,9 @@ def pipeline(in_dir: str, out_dir: str = './results', boxplot: bool = True,
              boxplot_title: str = "CUE Value for All Strains",
              boxplot_file_name: str = "CUE_boxplot",
              env_conditions_line_graphs: bool = True,
-             env_conditions_line_graphs_title: str = ''):
+             env_conditions_line_graphs_title: str = 'CUE with Variying Media and Oxygen Concentrations, and Maintenance Flux',
+             env_conditions_line_graphs_file_name: str = 'CUE_media_02_maintenance'
+            ):
     """Pipeline to do all of the analysis/make all of the figures possible
     
     Args:
@@ -15,6 +17,9 @@ def pipeline(in_dir: str, out_dir: str = './results', boxplot: bool = True,
         boxplot (bool): Do you want to make a boxplot of the the distribution of CUE values?
         boxplot_title (str): Title that goes on the boxplot figure
         boxplot_file_name (str): file name for the boxplot figure
+        env_conditions_line_graphs (bool): Do you want to make the line graphs for the environmental conditions
+        env_conditions_line_graphs_title (str): Title that goes on the line graphs figure
+        env_conditions_line_graphs_file_name (str): file name for the line grpahs figure
         
     Returns:
         CUE_values (dict): Keys = model id, values = the CUE value"""
@@ -37,6 +42,10 @@ def pipeline(in_dir: str, out_dir: str = './results', boxplot: bool = True,
     # Boxplot
     if boxplot:
         gem2cue.plots.boxplot(data, boxplot_title, out_dir, boxplot_file_name)
+
+    # Environmental Line Graphs
+    if env_conditions_line_graphs:
+        gem2cue.plots.env_conditions_line_graphs(data, env_conditions_line_graphs_title, out_dir, env_conditions_line_graphs_file_name)
 
     # Return values
     return(CUE_values)
