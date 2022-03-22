@@ -3,5 +3,5 @@
 
 import gem2cue.pipeline
 
-nutrients = ['glc', 'accoa_c', 'fum_c']
-gem2cue.pipeline.pipeline('./test/test_files', './test/test_results', boxplot=False, nutrient_list = nutrients)
+# nutrients = ['glc', 'accoa_c', 'fum_c']
+gem2cue.pipeline.pipeline('./test/test_files', './test/test_results', boxplot=False)
