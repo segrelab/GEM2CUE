@@ -1,3 +1,4 @@
+from cmath import nan
 import cobra
 
 def atomExchangeMetabolite(model, atom='C'):
@@ -11,7 +12,7 @@ def atomExchangeMetabolite(model, atom='C'):
         ex_atoms (dict): Dictionary with the IDs as the rxn names, and the
             values as the number of atoms associates
     """
-    ex_atoms = {r.id: m.elements[atom] for m in model.metabolites for r in m.reactions if atom in m.elements if r.compartments == {'e'}}
+    ex_atoms = {r.id: m.elements[atom] for m in model.metabolites for r in m.reactions if atom in m.elements if r.compartments == {'C_e'}}
     
     return ex_atoms
 
@@ -41,9 +42,11 @@ def rCUE(model, co2_rxn='EX_co2_e', return_sol=False):
 
     # Calculate uptake C flux
     uptake = sum([sol.get_primal_by_id(r) * ex_c_atoms[r] for r in ex_c_atoms if r != co2_rxn])
-
-    # Calculate CUE
-    cue = 1 - abs(sol.get_primal_by_id(co2_rxn) / uptake)
+    if uptake == 0:
+        cue = nan
+    else:
+        # Calculate CUE
+        cue = 1 - abs(sol.get_primal_by_id(co2_rxn) / uptake)
 
     if return_sol:
         outputs = cue, sol
