@@ -48,7 +48,17 @@ class TestCalculateCUE(unittest.TestCase):
 
     
     def test_calculate_gge(self):
-        pass
+        """Test GGE Calculations"""
+        # Read in the file to test on
+        test_dir = os.path.dirname(os.path.realpath(__file__))
+        model = cobra.io.read_sbml_model(os.path.join(test_dir, 'test_files', 'EC_core_flux1.xml'))
+
+        # Call the function
+        out_value = gem2cue.calculate_cue.GGE(model, return_sol=False)
+
+        # Make sure that what came out is exactly what expected
+        comparison_value = -9999
+        self.assertEqual(out_value, comparison_value)
 
 
 if __name__ == '__main__':
