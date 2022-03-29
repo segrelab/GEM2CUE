@@ -1,4 +1,5 @@
 import pandas as pd
+import os
 
 import gem2cue.calculate_cue
 import gem2cue.work_w_dirs
@@ -28,10 +29,14 @@ def pipeline(in_dir: str, out_dir: str = './results', report: bool = True,
     Returns:
         CUE_values (dict): Keys = model id, values = the CUE value
     """
+    # If the output directory does not exsit, make it
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
     # Start a report file
     if report:
         # Creating an HTML file
-        Func = open("report.html","w") # TODO make a variable, add the outdir
+        Func = open(os.path.join(out_dir, "report.html"), "x") # TODO make a variable, add the outdir
         
         # Adding input data to the HTML file
         Func.write("<html>\n<head>\n<title> \nOutput Data in an HTML file \
@@ -57,18 +62,17 @@ def pipeline(in_dir: str, out_dir: str = './results', report: bool = True,
     # Get a list of just the CUE values
     data = list(CUE_values.values())
 
-    #  TODO: Make a pandas dataframe of the results, add to the report file
+    #  Make a pandas dataframe of the results, add to the report file
     if report:
         df = pd.DataFrame.from_dict(data)
         result = df.to_html()
-        Func = open("report.html","a") # TODO make a variable, add the outdir
+        Func = open(os.path.join(out_dir, "report.html"), "a")
         
         # Adding input data to the HTML file
         Func.write(result)
               
         # Saving the data into the HTML file
         Func.close()
-
 
     # Boxplot
     if boxplot:
