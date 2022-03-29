@@ -61,8 +61,11 @@ def rCUE(model, co2_rxn='EX_co2_e', return_sol=False):
 
 
 def GGE(model, return_sol=False):
-    """Compute the gross growth efficiency using the formula 
-        GGE = growth / uptake
+    """Compute GGE using the following definition
+
+                sum(uptake C) - sum(secretion C)
+        GGE =  ----------------------------------
+                        sum(uptake C)
     
     Args:
         model (cobra.core.Model): A model that has already been read in
@@ -81,9 +84,6 @@ def GGE(model, return_sol=False):
 
     # Get C atoms for each exchange reaction
     ex_c_atoms = atomExchangeMetabolite(model)
-
-    # Calculate uptake C flux
-    uptake = sum([sol.get_primal_by_id(r) * ex_c_atoms[r] for r in ex_c_atoms if r != co2_rxn])
     
     # Get C fluxes (flip signs so that uptake is positive)
     c_ex_fluxes = np.array([sol.get_primal_by_id(r) * -c for r, c in ex_c_atoms.items()])
