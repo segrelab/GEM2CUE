@@ -1,5 +1,6 @@
 import pandas as pd
 import os
+import matplotlib.pyplot as plt
 
 import gem2cue.calculate_cue
 import gem2cue.work_w_dirs
@@ -95,9 +96,24 @@ def pipeline(in_dir: str,
         definition_results = {}
         definition_results[definition] = data
 
-        # Get the function for the other definition
-        other_definition = ''
-        pass
+        # Get the function for the other definition(s)
+        other_definitions_list = [item for item in definition_options if item != definition]
+
+        # Get results from the other definition(s)
+        for other_definition in other_definitions_list:
+            definition_results[other_definition] = [other_definition(model) for model in model_list]
+
+        # Make boxplot
+        fig, ax = plt.subplots()
+        ax.boxplot(definition_results.values())
+        ax.set_xticklabels(definition_results.keys())
+        # TODO: Use short name for the tick labels
+
+        # Save the results
+        plt.savefig(out_dir + "/boxplots_compare_definitions.png")
+        plt.close()
+
+        # TODO: Add the plot the the report
 
     # Environmental Line Graphs
     if env_conditions_line_graphs:
