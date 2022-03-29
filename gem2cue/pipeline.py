@@ -7,7 +7,7 @@ import gem2cue.plots
 
 def pipeline(in_dir: str,
              out_dir: str = './results',
-             definition: str = 'CUE',
+             definition: str = gem2cue.calculate_cue.rCUE,
              report: bool = True, 
              boxplot: bool = True, 
              boxplot_title: str = "CUE Value for All Strains",
@@ -33,7 +33,7 @@ def pipeline(in_dir: str,
         CUE_values (dict): Keys = model id, values = the CUE value
     """
     # Check that the definition they want to use is an option
-    definition_options = ['solar', 'view', 'both']
+    definition_options = [gem2cue.calculate_cue.rCUE, gem2cue.calculate_cue.GGE]
     if definition not in definition_options:
         raise ValueError(f"Invalid definition. Expected one of: {definition_options}")
     
