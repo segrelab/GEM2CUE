@@ -3,4 +3,4 @@ class Strain:
     self.name = name
     self.model = model
     self.gc_content = gc_content
-    self.genome_length = genome_lengthS
+    self.genome_length = genome_length
