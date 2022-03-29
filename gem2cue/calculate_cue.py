@@ -60,7 +60,8 @@ def rCUE(model, co2_rxn='EX_co2_e', return_sol=False):
 
 
 def GGE(model, return_sol=False):
-    """
+    """Compute the gross growth efficiency using the formula 
+        GGE = growth / uptake
     
     Args:
         model (cobra.core.Model): A model that has already been read in
