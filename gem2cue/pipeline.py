@@ -1,3 +1,5 @@
+import pandas as pd
+
 import gem2cue.calculate_cue
 import gem2cue.work_w_dirs
 import gem2cue.plots
@@ -26,6 +28,19 @@ def pipeline(in_dir: str, out_dir: str = './results', report: bool = True,
     Returns:
         CUE_values (dict): Keys = model id, values = the CUE value
     """
+    # Start a report file
+    if report:
+        # Creating an HTML file
+        Func = open("report.html","w") # TODO make a variable, add the outdir
+        
+        # Adding input data to the HTML file
+        Func.write("<html>\n<head>\n<title> \nOutput Data in an HTML file \
+                </title>\n</head> <body><h1>GEM2CUE Report</h1>\
+                \n<h2>Single Strain Results</h2> \n</body></html>")
+              
+        # Saving the data into the HTML file
+        Func.close()
+
     # List all of the files in the directory
     file_list = gem2cue.work_w_dirs.list_model_files(in_dir)
 
@@ -42,18 +57,18 @@ def pipeline(in_dir: str, out_dir: str = './results', report: bool = True,
     # Get a list of just the CUE values
     data = list(CUE_values.values())
 
-    # Start a report file
+    #  TODO: Make a pandas dataframe of the results, add to the report file
     if report:
-        # Creating an HTML file
-        Func = open("report.html","w")
+        df = pd.DataFrame.from_dict(data)
+        result = df.to_html()
+        Func = open("report.html","a") # TODO make a variable, add the outdir
         
         # Adding input data to the HTML file
-        Func.write("<html>\n<head>\n<title> \nOutput Data in an HTML file \
-                </title>\n</head> <body><h1>Welcome to <u>GeeksforGeeks</u></h1>\
-                \n<h2>A <u>CS</u> Portal for Everyone</h2> \n</body></html>")
+        Func.write(result)
               
         # Saving the data into the HTML file
         Func.close()
+
 
     # Boxplot
     if boxplot:
