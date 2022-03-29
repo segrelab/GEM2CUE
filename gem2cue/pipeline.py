@@ -67,7 +67,7 @@ def pipeline(in_dir: str,
     CUE_values = {}
     # For each model add a key value pair of the model id and the CUE value
     for model in model_list:
-        CUE_values[model.id] = gem2cue.calculate_cue.rCUE(model)
+        CUE_values[model.id] = definition(model)
 
     # Get a list of just the CUE values
     data = list(CUE_values.values())

@@ -47,7 +47,7 @@ def boxplot(data, title, out_dir, file_name, report):
         Func.close()
 
 
-def env_conditions_line_graphs(model_list, nutrient_list, title, out_dir, file_name, report):
+def env_conditions_line_graphs(model_list, nutrient_list, definition, title, out_dir, file_name, report):
     """
     
     Args:
@@ -82,7 +82,7 @@ def env_conditions_line_graphs(model_list, nutrient_list, title, out_dir, file_n
                     # Set the model to use the updated medium
                     model.medium = medium
                     # Calculate CUE
-                    cue, sol = gem2cue.calculate_cue.rCUE(model, return_sol = True)
+                    cue, sol = definition(model, return_sol = True)
 
                     # Save to the data frame
                     row = {'nutrient': nutrient, 'nutrient_conc': nutrient_conc,
@@ -94,6 +94,7 @@ def env_conditions_line_graphs(model_list, nutrient_list, title, out_dir, file_n
         df = pd.DataFrame(data)
 
         # Plot
+        # FIXME: Make the y axis name based on the definition you are using
         g = sns.relplot(x='nutrient_conc', y='CUE', hue='nutrient', col='o2', data=df, kind='line', marker='o', height=3)
 
         # Add overall title to replot
