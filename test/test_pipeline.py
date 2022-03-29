@@ -20,9 +20,9 @@ class TestPipeline(unittest.TestCase):
         # Run the pipeline
         gem2cue.pipeline.pipeline(dir_name, OUT_DIR)
 
-        # Look at the number of figures, check the number is as expected
+        # Look at the number of figures (and report), check the number is as expected
         n_figs = len([name for name in os.listdir(OUT_DIR)])
-        self.assertEqual(n_figs, 1)
+        self.assertEqual(n_figs, 4)
 
         
     def tearDown(self):

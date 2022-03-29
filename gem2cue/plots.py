@@ -6,7 +6,7 @@ import os
 
 import gem2cue.calculate_cue
 
-def boxplot(data, title, out_dir, file_name):
+def boxplot(data, title, out_dir, file_name, report):
     """Take a list of CUE values, plot them as a boxplot, and save to the 
     specified output directory
 
@@ -39,9 +39,15 @@ def boxplot(data, title, out_dir, file_name):
     # Save
     plt.savefig(out_dir + "/" + file_name + ".png")
     plt.close()
+    
+    # Add to the report
+    if report:
+        Func = open(os.path.join(out_dir, "report.html"), "a")
+        Func.write('\n<img src="' + file_name + '.png">')
+        Func.close()
 
 
-def env_conditions_line_graphs(model_list, nutrient_list, title, out_dir, file_name):
+def env_conditions_line_graphs(model_list, nutrient_list, title, out_dir, file_name, report):
     """
     
     Args:
@@ -49,6 +55,10 @@ def env_conditions_line_graphs(model_list, nutrient_list, title, out_dir, file_n
     Returns:
 
     """
+    # Make a header for the results in the report
+    if report:
+        pass
+
     # Make a set of plots for each individiual model
     for model in model_list:
         # Get the name of the model, if there is no name- call it no name
@@ -102,3 +112,9 @@ def env_conditions_line_graphs(model_list, nutrient_list, title, out_dir, file_n
         # Save
         plt.savefig(out_dir + "/" + file_name + "_" + name + ".png")
         plt.close()
+
+        # Add to the report
+        if report:
+            Func = open(os.path.join(out_dir, "report.html"), "a")
+            Func.write('\n<img src="' + file_name + '_' + name + '.png">')
+            Func.close()
