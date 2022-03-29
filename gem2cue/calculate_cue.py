@@ -57,3 +57,21 @@ def rCUE(model, co2_rxn='EX_co2_e', return_sol=False):
         outputs = cue
 
     return outputs
+
+
+def GGE(model, return_sol=False):
+    """
+    
+    Args:
+        model (cobra.core.Model): A model that has already been read in
+        return_sol (boolean): Should the function output the FBA solution as
+            well, True to return, defaults to False
+
+    Returns:
+        if return_sol = False
+            outputs (int): The GGE value
+        if return_sol = True
+            outputs (List [int, cobra.core.Model.Solution]): The GGE and the
+            last obtained solution from optimizing the model stored in a list
+    """
+    pass
