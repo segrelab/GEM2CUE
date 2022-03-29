@@ -50,6 +50,8 @@ def pipeline(in_dir: str,
         Func.write("<html>\n<head>\n<title> \nOutput Data in an HTML file \
                 </title>\n</head> <body><h1>GEM2CUE Report</h1>\
                 \n<h2>Single Strain Results</h2>\n")
+
+        # TODO: Add info about the definition you are using
               
         # Saving the data into the HTML file
         Func.close()
