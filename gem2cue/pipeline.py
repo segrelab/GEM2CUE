@@ -91,6 +91,12 @@ def pipeline(in_dir: str,
 
     # Boxplot of the values for the two different definitions
     if compare_definitions:
+        # Add the results I already have to a dictionary
+        definition_results = {}
+        definition_results[definition] = data
+
+        # Get the function for the other definition
+        other_definition = ''
         pass
 
     # Environmental Line Graphs
