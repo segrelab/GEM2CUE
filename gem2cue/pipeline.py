@@ -90,7 +90,7 @@ def pipeline(in_dir: str,
 
     # Environmental Line Graphs
     if env_conditions_line_graphs:
-        gem2cue.plots.env_conditions_line_graphs(model_list, nutrient_list, env_conditions_line_graphs_title, out_dir, env_conditions_line_graphs_file_name, report)
+        gem2cue.plots.env_conditions_line_graphs(model_list, nutrient_list, definition, env_conditions_line_graphs_title, out_dir, env_conditions_line_graphs_file_name, report)
 
     # Close the report
     if report:
