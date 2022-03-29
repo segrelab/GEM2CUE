@@ -1,5 +1,6 @@
 from cmath import nan
 import cobra
+import numpy as np
 
 def atomExchangeMetabolite(model, atom='C'):
     """Get number of carbon atoms associated with each exchange reaction
@@ -59,7 +60,7 @@ def rCUE(model, co2_rxn='EX_co2_e', return_sol=False):
     return outputs
 
 
-def GGE(model, co2_rxn='EX_co2_e', return_sol=False):
+def GGE(model, return_sol=False):
     """Compute the gross growth efficiency using the formula 
         GGE = growth / uptake
     
@@ -84,11 +85,11 @@ def GGE(model, co2_rxn='EX_co2_e', return_sol=False):
     # Calculate uptake C flux
     uptake = sum([sol.get_primal_by_id(r) * ex_c_atoms[r] for r in ex_c_atoms if r != co2_rxn])
     
-    # Pull the biomass out of the solution
-    biomass = -9999
+    # Get C fluxes (flip signs so that uptake is positive)
+    c_ex_fluxes = np.array([sol.get_primal_by_id(r) * -c for r, c in ex_c_atoms.items()])
 
     # Calculate GGE
-    gge = biomass / uptake
+    gge = c_ex_fluxes.sum() / c_ex_fluxes[c_ex_fluxes > 0].sum()
 
     if return_sol:
         outputs = gge, sol
