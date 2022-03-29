@@ -54,7 +54,7 @@ class TestCalculateCUE(unittest.TestCase):
         model = cobra.io.read_sbml_model(os.path.join(test_dir, 'test_files', 'EC_core_flux1.xml'))
 
         # Call the function
-        out_value = gem2cue.calculate_cue.GGE(model, return_sol=False)
+        out_value = gem2cue.calculate_cue.GGE(model, co2_rxn='EX_co2_e', return_sol=False)
 
         # Make sure that what came out is exactly what expected
         comparison_value = -9999

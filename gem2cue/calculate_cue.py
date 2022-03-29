@@ -59,7 +59,7 @@ def rCUE(model, co2_rxn='EX_co2_e', return_sol=False):
     return outputs
 
 
-def GGE(model, return_sol=False):
+def GGE(model, co2_rxn='EX_co2_e', return_sol=False):
     """Compute the gross growth efficiency using the formula 
         GGE = growth / uptake
     
