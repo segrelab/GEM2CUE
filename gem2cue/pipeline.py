@@ -5,7 +5,10 @@ import gem2cue.calculate_cue
 import gem2cue.work_w_dirs
 import gem2cue.plots
 
-def pipeline(in_dir: str, out_dir: str = './results', report: bool = True, 
+def pipeline(in_dir: str,
+             out_dir: str = './results',
+             definition: str = 'CUE',
+             report: bool = True, 
              boxplot: bool = True, 
              boxplot_title: str = "CUE Value for All Strains",
              boxplot_file_name: str = "CUE_boxplot",
@@ -29,6 +32,11 @@ def pipeline(in_dir: str, out_dir: str = './results', report: bool = True,
     Returns:
         CUE_values (dict): Keys = model id, values = the CUE value
     """
+    # Check that the definition they want to use is an option
+    definition_options = ['solar', 'view', 'both']
+    if definition not in definition_options:
+        raise ValueError(f"Invalid definition. Expected one of: {definition_options}")
+    
     # If the output directory does not exsit, make it
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
