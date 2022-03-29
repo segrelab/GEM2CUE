@@ -75,4 +75,24 @@ def GGE(model, return_sol=False):
             outputs (List [int, cobra.core.Model.Solution]): The GGE and the
             last obtained solution from optimizing the model stored in a list
     """
-    pass
+    # Solve FBA
+    sol = model.optimize()
+
+    # Get C atoms for each exchange reaction
+    ex_c_atoms = atomExchangeMetabolite(model)
+
+    # Calculate uptake C flux
+    uptake = sum([sol.get_primal_by_id(r) * ex_c_atoms[r] for r in ex_c_atoms if r != co2_rxn])
+    
+    # Pull the biomass out of the solution
+    biomass = -9999
+
+    # Calculate GGE
+    gge = biomass / uptake
+
+    if return_sol:
+        outputs = gge, sol
+    else:
+        outputs = gge
+
+    return outputs

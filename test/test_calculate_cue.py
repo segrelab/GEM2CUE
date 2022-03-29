@@ -46,5 +46,10 @@ class TestCalculateCUE(unittest.TestCase):
                             'EX_succ_e': 4}
         self.assertEqual(out_value, comparison_value)
 
+    
+    def test_calculate_gge(self):
+        pass
+
+
 if __name__ == '__main__':
     unittest.main()
