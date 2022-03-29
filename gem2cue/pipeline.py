@@ -12,6 +12,7 @@ def pipeline(in_dir: str,
              boxplot: bool = True, 
              boxplot_title: str = "CUE Value for All Strains",
              boxplot_file_name: str = "CUE_boxplot",
+             compare_definitions: bool = True,
              env_conditions_line_graphs: bool = True,
              nutrient_list = ['glc'],
              env_conditions_line_graphs_title: str = 'CUE with Variying Media and Oxygen Concentrations',
@@ -87,6 +88,10 @@ def pipeline(in_dir: str,
     # Boxplot
     if boxplot:
         gem2cue.plots.boxplot(data, boxplot_title, out_dir, boxplot_file_name, report)
+
+    # Boxplot of the values for the two different definitions
+    if compare_definitions:
+        pass
 
     # Environmental Line Graphs
     if env_conditions_line_graphs:
