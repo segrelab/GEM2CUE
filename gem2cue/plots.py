@@ -42,7 +42,9 @@ def boxplot(data, title, out_dir, file_name, report):
     
     # Add to the report
     if report:
-        pass
+        Func = open(os.path.join(out_dir, "report.html"), "a")
+        Func.write('\n<img src="' + file_name + '.png">')
+        Func.close()
 
 
 def env_conditions_line_graphs(model_list, nutrient_list, title, out_dir, file_name, report):
@@ -113,4 +115,6 @@ def env_conditions_line_graphs(model_list, nutrient_list, title, out_dir, file_n
 
         # Add to the report
         if report:
-            pass
+            Func = open(os.path.join(out_dir, "report.html"), "a")
+            Func.write('\n<img src="' + file_name + '_' + name + '.png">')
+            Func.close()

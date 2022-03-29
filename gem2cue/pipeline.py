@@ -41,7 +41,7 @@ def pipeline(in_dir: str, out_dir: str = './results', report: bool = True,
         # Adding input data to the HTML file
         Func.write("<html>\n<head>\n<title> \nOutput Data in an HTML file \
                 </title>\n</head> <body><h1>GEM2CUE Report</h1>\
-                \n<h2>Single Strain Results</h2> \n</body></html>")
+                \n<h2>Single Strain Results</h2>\n")
               
         # Saving the data into the HTML file
         Func.close()
@@ -81,6 +81,12 @@ def pipeline(in_dir: str, out_dir: str = './results', report: bool = True,
     # Environmental Line Graphs
     if env_conditions_line_graphs:
         gem2cue.plots.env_conditions_line_graphs(model_list, nutrient_list, env_conditions_line_graphs_title, out_dir, env_conditions_line_graphs_file_name, report)
+
+    # Close the report
+    if report:
+        Func = open(os.path.join(out_dir, "report.html"), "a")
+        Func.write("\n</body></html>")
+        Func.close()
 
     # Return values
     return(CUE_values)
