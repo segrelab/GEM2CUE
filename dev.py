@@ -1,11 +1,9 @@
-# How to make a boxplot with two boxes on it
+# How to get the other item from the list
 
-import matplotlib.pyplot as plt
+list = ['A', 'B']
 
-my_dict = {'ABC': [34.54, 34.345, 34.761], 'DEF': [34.541, 34.748, 34.482]}
+choice = 'A'
 
-fig, ax = plt.subplots()
-ax.boxplot(my_dict.values())
-ax.set_xticklabels(my_dict.keys())
+other = [item for item in list if item != choice]
 
-plt.savefig("test.png")
+print(other)
