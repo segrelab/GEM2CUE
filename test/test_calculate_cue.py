@@ -57,7 +57,7 @@ class TestCalculateCUE(unittest.TestCase):
         out_value = gem2cue.calculate_cue.GGE(model, return_sol=False)
 
         # Make sure that what came out is exactly what expected
-        comparison_value = -9999
+        comparison_value = 0.6198361114965837
         self.assertEqual(out_value, comparison_value)
 
 
