@@ -1,6 +1,8 @@
 import glob
 import cobra
 
+import gem2cue.strain
+
 def list_model_files(dir: str, type: str = 'xml'):
     """Take a directory and list all of the model files in it
     
@@ -38,6 +40,28 @@ def list_cobra_models(file_list):
     return(model_list)
 
 
-def list_Strains(file_list, gc_list = None, gen_length_list = None):
-    """Take a list of files"""
-    pass
+def list_Strains(model_list, name_list = None, gc_list = None, gen_length_list = None):
+    """Take a list of models and make them Strain objects, if any metadata is
+    provided, include that in the Strain
+    
+    Args:
+        model_list ([cobra.Model]): List of all the model objects
+        gc_list ([int]): GC content for the strains
+        gen_length_list ([int]): Genome lengths for the strains
+        
+    Returns:
+        strain_list ([Strain]): List of all the strain objects
+    """
+    # TODO: Ensure that all the input lists are the same length
+    strain_list = []
+    for idx in len(model_list):
+        model = model_list[idx]
+        if name_list is None:
+            name = model.name
+        strain_obj = gem2cue.strain.Strain(name,
+                                           model,
+                                           gc_list[idx],
+                                           gen_length_list[idx])
+        strain_list.append(strain_obj)
+    
+    return(strain_list)
