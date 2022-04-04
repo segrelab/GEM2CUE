@@ -16,6 +16,7 @@ def list_model_files(dir: str, type: str = 'xml'):
 
     return(file_list)
 
+
 def list_cobra_models(file_list):
     """Take a list of files and read them in as cobra models
     
@@ -35,3 +36,8 @@ def list_cobra_models(file_list):
     model_list = [cobra.io.read_sbml_model(f) for f in file_list]
 
     return(model_list)
+
+
+def list_Strains(file_list, gc_list = None, gen_length_list = None):
+    """Take a list of files"""
+    pass
