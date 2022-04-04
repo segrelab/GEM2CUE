@@ -56,12 +56,19 @@ def list_Strains(model_list, name_list = None, gc_list = None, gen_length_list =
     strain_list = []
     for idx in range(len(model_list)):
         model = model_list[idx]
+        # Collect the metadata
         if name_list is None:
             name = model.id
         if gc_list is None:
             gc = None
+        else:
+            gc = gc_list[idx]
         if gen_length_list is None:
             length = None
+        else:
+            length = gen_length_list[idx]
+
+        # Make the strain object
         strain_obj = gem2cue.strain.Strain(name,
                                            model,
                                            gc,

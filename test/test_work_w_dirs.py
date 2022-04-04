@@ -44,6 +44,19 @@ class TestWorkWithDirs(unittest.TestCase):
         self.assertEqual(strain_list[1].gc_content, None)
         self.assertEqual(strain_list[1].genome_length, None)
 
+        # Add GC content and genome length
+        gc_list = [0.4, 0.6]
+        genome_length = [100, 200]
+        strain_list = gem2cue.work_w_dirs.list_Strains(model_list,
+                                                       gc_list=gc_list,
+                                                       gen_length_list=genome_length)  
+        self.assertEqual(len(strain_list), 2)
+        self.assertEqual(strain_list[0].name, 'iIT341')
+        self.assertEqual(strain_list[1].name, 'e_coli_core')
+        self.assertEqual(strain_list[0].gc_content, 0.4)
+        self.assertEqual(strain_list[0].genome_length, 100)
+        self.assertEqual(strain_list[1].gc_content, 0.6)
+        self.assertEqual(strain_list[1].genome_length, 200)
 
 if __name__ == '__main__':
     unittest.main()
