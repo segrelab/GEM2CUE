@@ -14,8 +14,7 @@ class TestWorkWithDirs(unittest.TestCase):
         file_list = gem2cue.work_w_dirs.list_model_files(dir_name)
 
         # Make sure that what came out is exactly what expected
-        comparison_list = [test_dir + '/test_files/iLJ478.xml',
-                           test_dir + '/test_files/iIT341.xml',
+        comparison_list = [test_dir + '/test_files/iIT341.xml',
                            test_dir + '/test_files/EC_core_flux1.xml']
         self.assertEqual(file_list, comparison_list)
 
