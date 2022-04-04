@@ -54,7 +54,7 @@ def list_Strains(model_list, name_list = None, gc_list = None, gen_length_list =
     """
     # TODO: Ensure that all the input lists are the same length
     strain_list = []
-    for idx in len(model_list):
+    for idx in range(len(model_list)):
         model = model_list[idx]
         if name_list is None:
             name = model.name

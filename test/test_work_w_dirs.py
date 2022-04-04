@@ -26,8 +26,11 @@ class TestWorkWithDirs(unittest.TestCase):
         file_list = [TEST_DIR + '/test_files/iIT341.xml',
                            TEST_DIR + '/test_files/EC_core_flux1.xml']
 
+        # Read in models
+        model_list = gem2cue.work_w_dirs.list_cobra_models(file_list)
+
         # Call the function
-        strain_list = gem2cue.work_w_dirs.list_Strains(file_list)
+        strain_list = gem2cue.work_w_dirs.list_Strains(model_list)
 
         # Make sure that what came out is exactly what expected
         comparison_list = []
