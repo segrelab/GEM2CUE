@@ -32,9 +32,17 @@ class TestWorkWithDirs(unittest.TestCase):
         # Call the function
         strain_list = gem2cue.work_w_dirs.list_Strains(model_list)
 
-        # Make sure that what came out is exactly what expected
-        comparison_list = []
-        self.assertEqual(strain_list, comparison_list)
+        # Check the number of elements is as expected
+        self.assertEqual(len(strain_list), 2)
+        # Check the names are right
+        self.assertEqual(strain_list[0].name, 'iIT341')
+        self.assertEqual(strain_list[1].name, 'e_coli_core')
+        # Not sure how else I can test the model
+        # Check that the GC content and lengths are none
+        self.assertEqual(strain_list[0].gc_content, None)
+        self.assertEqual(strain_list[0].genome_length, None)
+        self.assertEqual(strain_list[1].gc_content, None)
+        self.assertEqual(strain_list[1].genome_length, None)
 
 
 if __name__ == '__main__':

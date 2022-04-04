@@ -57,11 +57,15 @@ def list_Strains(model_list, name_list = None, gc_list = None, gen_length_list =
     for idx in range(len(model_list)):
         model = model_list[idx]
         if name_list is None:
-            name = model.name
+            name = model.id
+        if gc_list is None:
+            gc = None
+        if gen_length_list is None:
+            length = None
         strain_obj = gem2cue.strain.Strain(name,
                                            model,
-                                           gc_list[idx],
-                                           gen_length_list[idx])
+                                           gc,
+                                           length)
         strain_list.append(strain_obj)
     
     return(strain_list)
