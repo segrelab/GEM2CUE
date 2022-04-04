@@ -1,5 +1,6 @@
 from cmath import nan
 import cobra
+import numpy as np
 
 def atomExchangeMetabolite(model, atom='C'):
     """Get number of carbon atoms associated with each exchange reaction
@@ -55,5 +56,44 @@ def rCUE(model, co2_rxn='EX_co2_e', return_sol=False):
         outputs = cue, sol
     else:
         outputs = cue
+
+    return outputs
+
+
+def GGE(model, return_sol=False):
+    """Compute GGE using the following definition
+
+                sum(uptake C) - sum(secretion C)
+        GGE =  ----------------------------------
+                        sum(uptake C)
+    
+    Args:
+        model (cobra.core.Model): A model that has already been read in
+        return_sol (boolean): Should the function output the FBA solution as
+            well, True to return, defaults to False
+
+    Returns:
+        if return_sol = False
+            outputs (int): The GGE value
+        if return_sol = True
+            outputs (List [int, cobra.core.Model.Solution]): The GGE and the
+            last obtained solution from optimizing the model stored in a list
+    """
+    # Solve FBA
+    sol = model.optimize()
+
+    # Get C atoms for each exchange reaction
+    ex_c_atoms = atomExchangeMetabolite(model)
+    
+    # Get C fluxes (flip signs so that uptake is positive)
+    c_ex_fluxes = np.array([sol.get_primal_by_id(r) * -c for r, c in ex_c_atoms.items()])
+
+    # Calculate GGE
+    gge = c_ex_fluxes.sum() / c_ex_fluxes[c_ex_fluxes > 0].sum()
+
+    if return_sol:
+        outputs = gge, sol
+    else:
+        outputs = gge
 
     return outputs
