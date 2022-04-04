@@ -22,7 +22,7 @@ class TestPipeline(unittest.TestCase):
 
         # Look at the number of figures (and report), check the number is as expected
         n_figs = len([name for name in os.listdir(OUT_DIR)])
-        self.assertEqual(n_figs, 4)
+        self.assertEqual(n_figs, 5)
 
         
     def tearDown(self):
