@@ -64,12 +64,15 @@ def pipeline(in_dir: str,
     # Read in all of the models
     model_list = gem2cue.work_w_dirs.list_cobra_models(file_list)
 
+    # Make strain objects
+    strain_list = gem2cue.work_w_dirs.list_Strains(model_list)
+
     # Calculate CUE for all the models
     # Make a dictionary
     CUE_values = {}
     # For each model add a key value pair of the model id and the CUE value
-    for model in model_list:
-        CUE_values[model.id] = definition(model)
+    for single_strain in strain_list:
+        CUE_values[single_strain.name] = definition(single_strain.model)
 
     # Get a list of just the CUE values
     data = list(CUE_values.values())
