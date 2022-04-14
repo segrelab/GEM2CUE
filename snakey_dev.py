@@ -15,9 +15,11 @@ from matplotlib.sankey import Sankey
 # plt.savefig("sankey_ex_01.png")
 ################################################################################
 # Made up FBA results
-Sankey(flows=[1, -0.33, -0.33, -0.33],
-       labels=['U = A', 'R', 'EX', 'G'],
-       orientations=[0, 1, 1, 0]).finish()
+Sankey(flows = [1, -0.33, -0.33, -0.33],
+       labels = ['U = A', 'R', 'EX', 'G'],
+       orientations = [0, 1, 1, 0],
+       pathlengths = [0.6, 0.25, 0.25, 0.4]).finish()
 plt.title("CUE definition")
 plt.savefig("sankey_ex_02.png")
+
 
