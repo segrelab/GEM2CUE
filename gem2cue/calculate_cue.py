@@ -44,8 +44,11 @@ def rCUE(model, co2_rxn='EX_co2_e', return_sol=False):
     # Get C atoms for each exchange reaction
     ex_c_atoms = atomExchangeMetabolite(model)
 
+    # Subset to uptake reactions (negative flux)
+    uptake_rxns = sol.fluxes[ex_c_atoms.keys()].pipe(lambda x: x[x<0]).index
+
     # Calculate uptake C flux
-    uptake = sum([sol.get_primal_by_id(r) * ex_c_atoms[r] for r in ex_c_atoms if r != co2_rxn])
+    uptake = sum([sol.get_primal_by_id(r) * ex_c_atoms[r] for r in uptake_rxns if r != co2_rxn])
     if uptake == 0:
         cue = nan
     else:
