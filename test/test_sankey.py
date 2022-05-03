@@ -22,7 +22,7 @@ class TestPipeline(unittest.TestCase):
         gem2cue.plots.sankey_plot(model, out_dir = OUT_DIR)
 
         # Make plot for other test model
-        model_file = os.path.join(TEST_DIR, 'test_files', 'ilT341.xml')
+        model_file = os.path.join(TEST_DIR, 'test_files', 'iIT341.xml')
         model = cobra.io.read_sbml_model(model_file)
         gem2cue.plots.sankey_plot(model, out_dir = OUT_DIR)
 
