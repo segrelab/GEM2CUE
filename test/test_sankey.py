@@ -17,6 +17,8 @@ class TestPipeline(unittest.TestCase):
         # Make sure there is not an output direcotory with that name already
         if os.path.exists(OUT_DIR):
             raise ValueError(f'There is already a directory named {OUT_DIR}')
+        # Then make it
+        os.makedirs(OUT_DIR)
 
         # Run the pipeline
         gem2cue.plots.sankey_plot(model, out_dir = OUT_DIR)
