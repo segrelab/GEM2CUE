@@ -161,7 +161,7 @@ def sankey_plot(model: cobra.core.Model,
 
     # Find the exudation flux
     exudation_rxns = sol.fluxes[ex_c_atoms.keys()].pipe(lambda x: x[x>0]).index # Postive flux for exudation
-    ex = abs(sum([sol.get_primal_by_id(r) * ex_c_atoms[r] for r in exudation_rxns if r != co2_rxn])) # Do really need to say no CO2 reaction
+    ex = -1 * abs(sum([sol.get_primal_by_id(r) * ex_c_atoms[r] for r in exudation_rxns if r != co2_rxn])) # Do really need to say no CO2 reaction
 
     # Find the biomass flux
     # Make a dictionary of the fluxes for each metabolite in the biomass reaction
@@ -180,5 +180,10 @@ def sankey_plot(model: cobra.core.Model,
         labels = ['U = A', 'R', 'EX', 'G'],
         orientations = [0, 1, 1, 0],
         pathlengths = [50, 10, 10, 20]).finish()
-    plt.title(title_stem + model.name)
+    # Make sure the title will have a model name in it
+    if model.name == '':
+        print_name = model.id
+    else:
+        print_name = model.name
+    plt.title(title_stem + print_name)
     plt.savefig(os.path.join(out_dir, file_stem + model.id + ".png"))
