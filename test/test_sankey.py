@@ -24,7 +24,8 @@ class TestPipeline(unittest.TestCase):
         # Make plot for other test model
         model_file = os.path.join(TEST_DIR, 'test_files', 'iIT341.xml')
         model = cobra.io.read_sbml_model(model_file)
-        gem2cue.plots.sankey_plot(model, out_dir = OUT_DIR)
+        gem2cue.plots.sankey_plot(model, biomass_rxn = 'BIOMASS_HP_published',
+                                  out_dir = OUT_DIR)
 
         # Look at the number of figures check the number is as expected
         n_figs = len([name for name in os.listdir(OUT_DIR)])

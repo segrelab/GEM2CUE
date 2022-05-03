@@ -165,7 +165,7 @@ def sankey_plot(model: cobra.core.Model,
 
     # Find the biomass flux
     # Make a dictionary of the fluxes for each metabolite in the biomass reaction
-    biomass_dict = model.reactions.BIOMASS_Ecoli_core_w_GAM.metabolites
+    biomass_dict = getattr(model.reactions, biomass_rxn).metabolites
     # Find the number of C atoms that the biomass reaction takes in
     biom_in = abs(sum([biomass_dict[m] * sol.get_primal_by_id(biomass_rxn) * m.elements['C'] for m in biomass_dict if biomass_dict[m] < 0 if 'C' in m.elements]))
     # Find the number of C atoms that the biomass reaction puts out
