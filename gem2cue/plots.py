@@ -174,12 +174,17 @@ def sankey_plot(model: cobra.core.Model,
     # Is this what actually goes to biomass?
     biom = -1 * (biom_in - biom_out)
 
+    # Normalize to uptake
+    uptake_norm = 1
+    resp_norm = resp / uptake
+    ex_norm = ex / uptake
+    biom_norm = biom / uptake
 
     # Make the plot
-    Sankey(flows = [uptake, resp, ex, biom],
+    Sankey(flows = [uptake_norm, resp_norm, ex_norm, biom_norm],
         labels = ['U = A', 'R', 'EX', 'G'],
         orientations = [0, 1, 1, 0],
-        pathlengths = [50, 10, 10, 20]).finish()
+        pathlengths = [1, 0.25, 0.25, 0.5]).finish()
     # Make sure the title will have a model name in it
     if model.name == '':
         print_name = model.id
