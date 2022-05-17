@@ -5,7 +5,6 @@ import pandas as pd
 import seaborn as sns
 import os
 import cobra
-from dev import CUE_list
 
 import gem2cue.calculate_cue
 
