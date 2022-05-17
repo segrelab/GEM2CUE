@@ -4,6 +4,7 @@ import shutil
 import cobra
 
 import gem2cue.plots
+import gem2cue.work_w_dirs
 
 TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 OUT_DIR = os.path.join(TEST_DIR, 'test_results')
@@ -63,7 +64,7 @@ class TestPlots(unittest.TestCase):
                                     definition = gem2cue.calculate_cue.rCUE,
                                     title = 'CUE vs GC content', 
                                     out_dir = OUT_DIR,
-                                    file_name = 'gc_plot',
+                                    file_name = 'gen_len_plot',
                                     report = False)
 
         # Look at the number of figures check the number is as expected

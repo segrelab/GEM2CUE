@@ -222,13 +222,13 @@ def gc_content(strain_list, definition, title, out_dir, file_name, report):
         os.makedirs(out_dir)
 
     # Save
-    plt.savefig(out_dir + "/" + file_name + "_" + name + ".png")
+    plt.savefig(out_dir + "/" + file_name + ".png")
     plt.close()
 
     # Add to the report
     if report:
         Func = open(os.path.join(out_dir, "report.html"), "a")
-        Func.write('\n<img src="' + file_name + '_' + name + '.png">')
+        Func.write('\n<img src="' + file_name + '.png">')
         Func.close()
 
 
