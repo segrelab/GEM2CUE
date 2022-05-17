@@ -233,5 +233,39 @@ def gc_content(strain_list, definition, title, out_dir, file_name, report):
         Func.close()
 
 
-def genome_length():
-    pass
+def genome_length(strain_list, definition, title, out_dir, file_name, report):
+    """Make a scatterplot of CUE vs Genome length
+
+    Args:
+    
+    Returns:
+    Nothing, figure is automatically saved
+    """
+    # Make lists to hold the values to plot
+    length_list = []
+    CUE_list = []
+
+    # Calculate the CUE and pull out the GC content for each strain
+    for strain in strain_list:
+        length_list.append(strain.genome_length)
+        CUE_list.append(definition(strain.model))
+
+    # Plot
+    plt.plot(length_list, CUE_list)
+    plt.xlabel('Genome Length (bp)')
+    plt.ylabel('CUE')
+    plt.title(title)
+    
+    # If the output directory does not exist, make it
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
+    # Save
+    plt.savefig(out_dir + "/" + file_name  + ".png")
+    plt.close()
+
+    # Add to the report
+    if report:
+        Func = open(os.path.join(out_dir, "report.html"), "a")
+        Func.write('\n<img src="' + file_name + '.png">')
+        Func.close()
