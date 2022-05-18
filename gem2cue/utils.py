@@ -48,17 +48,33 @@ class Media:
         # Append to `medias` list
         self._medias.append(new_concentrations)
 
+class Strain:
+    "A model and it's associated metadata"
+
+    def __init__(self, name, model, gc_content, genome_length):
+        """
+        name:
+        model:
+        gc_content:
+        genome_length:
+        """
+        self.name = name
+        self.model = model
+        self.gc_content = gc_content
+        self.genome_length = genome_length
+
+
 class Organism:
     "A metabolic model for a single organism in a Community"
 
-    def __init__(self, model: cobra.Model, biomass: float = 0.1, flux_parameters: dict = None):
+    def __init__(self, strain: Strain, biomass: float = 0.1, flux_parameters: dict = None):
         """
-        model: A cobrapy model
+        strain: A Strain class object with a cobrapy model 
 
         biomass: Initial biomass
         flux_parameters: Dictionary of vmax and km (default: {'vmax': 2.0, 'km': 0.5})
         """
-        self.model = model.copy()
+        self.strain = strain
         self._exchange_reaction_ids = [e.id for e in model.exchanges]
         self._biomasses = [biomass]
         if not flux_parameters:
