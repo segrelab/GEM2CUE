@@ -64,48 +64,6 @@ class Strain:
         self.genome_length = genome_length
 
 
-class Organism:
-    "A metabolic model for a single organism in a Community"
-
-    def __init__(self, strain: Strain, biomass: float = 0.1, flux_parameters: dict = None):
-        """
-        strain: A Strain class object with a cobrapy model 
-
-        biomass: Initial biomass
-        flux_parameters: Dictionary of vmax and km (default: {'vmax': 2.0, 'km': 0.5})
-        """
-        self.strain = strain
-        self._exchange_reaction_ids = [e.id for e in model.exchanges]
-        self._biomasses = [biomass]
-        if not flux_parameters:
-            flux_parameters = {'vmax': 2.0, 'km': 0.5}
-        self.flux_parameters = flux_parameters
-
-        self.growth_rates = []
-        self._fluxes = []
-        self._uptake_concentrations = []
-
-        self.infeasible_timestep = None
-
-    @property
-    def biomass(self) -> float:
-        return self._biomasses[-1]
-    
-    @property
-    def biomasses(self) -> pd.Series:
-        return pd.Series(self._biomasses).rename(self.model.id)
-    
-    @property
-    def fluxes(self) -> pd.DataFrame:
-        fluxes_df = pd.concat(self._fluxes, axis=1).T.reset_index(drop=True).rename_axis(index='timestep', columns='reaction')
-        non_zero_fluxes = fluxes_df.ne(0).any().pipe(lambda x: x[x]).index
-        # Subset to non-zero fluxes
-        return fluxes_df[non_zero_fluxes]
-
-    @property
-    def uptake_concentrations(self) -> pd.DataFrame:
-        return -pd.DataFrame(self._uptake_concentrations).rename_axis(index='timestep', columns='reaction')
-
 class Experiment:
     "A collection of metabolic model(s) in an environment"
 
