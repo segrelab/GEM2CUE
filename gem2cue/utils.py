@@ -65,14 +65,32 @@ class Strain:
 
 
 class Experiment:
-    "A collection of metabolic model(s) in an environment"
+    "A collection of one strain in an environment"
 
-    def __init__(self, strains: List[Strain], media: Media):
+    def __init__(self, strain: Strain, media: Media):
         """
         organisms: A list of Organism(s)
         media: A `Media` object
         """
-        if isinstance(strains, Strain):
-            strains = [strains]
-        self.strains = strains
+        self.strain = strain
         self.Media = media
+
+
+    def atomExchangeMetabolite(self, atom = 'C'):
+        """Get number of carbon atoms associated with each exchange reaction
+    
+        Args:
+            model (cobra.core.Model): A file that has already been read in
+            atom (string): String of atom of interest
+
+        Returns:
+            ex_atoms (dict): Dictionary with the IDs as the rxn names, and the
+                values as the number of atoms associates
+        """
+
+        # FIXME: This is where the issue is
+        # compartment for CarveMe models is C_e
+        # Compartment for BiGG models is e
+        ex_atoms = {r.id: m.elements[atom] for m in self.strain.model.metabolites for r in m.reactions if atom in m.elements if r.compartments == {'e'}}
+        
+        return ex_atoms
