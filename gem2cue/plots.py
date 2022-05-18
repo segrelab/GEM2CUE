@@ -61,7 +61,7 @@ def env_conditions_line_graphs(model_list, nutrient_list, definition, title, out
     if report:
         pass
 
-    # Make a set of plots for each individiual model
+    # Make a set of plots for each individual model
     for model in model_list:
         # Get the name of the model, if there is no name- call it no name
         # TODO: Throw a warning because if you have multiple models with no name you will overwrite results
@@ -192,3 +192,79 @@ def sankey_plot(model: cobra.core.Model,
         print_name = model.name
     plt.title(title_stem + print_name)
     plt.savefig(os.path.join(out_dir, file_stem + model.id + ".png"))
+
+
+def gc_content(strain_list, definition, title, out_dir, file_name, report):
+    """Make a scatterplot of CUE vs GC content
+
+    Args:
+    
+    Returns:
+    Nothing, figure is automatically saved
+    """
+    # Make lists to hold the values to plot
+    gc_list = []
+    CUE_list = []
+
+    # Calculate the CUE and pull out the GC content for each strain
+    for strain in strain_list:
+        gc_list.append(strain.gc_content)
+        CUE_list.append(definition(strain.model))
+
+    # Plot
+    plt.plot(gc_list, CUE_list)
+    plt.xlabel('GC Content (%)')
+    plt.ylabel('CUE')
+    plt.title(title)
+    
+    # If the output directory does not exist, make it
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
+    # Save
+    plt.savefig(out_dir + "/" + file_name + ".png")
+    plt.close()
+
+    # Add to the report
+    if report:
+        Func = open(os.path.join(out_dir, "report.html"), "a")
+        Func.write('\n<img src="' + file_name + '.png">')
+        Func.close()
+
+
+def genome_length(strain_list, definition, title, out_dir, file_name, report):
+    """Make a scatterplot of CUE vs Genome length
+
+    Args:
+    
+    Returns:
+    Nothing, figure is automatically saved
+    """
+    # Make lists to hold the values to plot
+    length_list = []
+    CUE_list = []
+
+    # Calculate the CUE and pull out the GC content for each strain
+    for strain in strain_list:
+        length_list.append(strain.genome_length)
+        CUE_list.append(definition(strain.model))
+
+    # Plot
+    plt.plot(length_list, CUE_list)
+    plt.xlabel('Genome Length (bp)')
+    plt.ylabel('CUE')
+    plt.title(title)
+    
+    # If the output directory does not exist, make it
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
+    # Save
+    plt.savefig(out_dir + "/" + file_name  + ".png")
+    plt.close()
+
+    # Add to the report
+    if report:
+        Func = open(os.path.join(out_dir, "report.html"), "a")
+        Func.write('\n<img src="' + file_name + '.png">')
+        Func.close()
