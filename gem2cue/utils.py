@@ -10,20 +10,15 @@ import warnings
 class Media:
     "Environmental media for a Community over time"
 
-    def __init__(self, media: dict = None, fixed: List[str] = None):
+    def __init__(self, media: dict = None):
         """
         media: A dictionary of cobrapy exchange reactions and starting concentration. 
         | * LIMITING NUTRIENTS: Provide desired concentration
         | * NON-LIMITING NUTRIENTS: Indicate with unlimited supply with `np.inf` and completely limited with `-np.inf`
          Ex: Limited glucose with unlimited CO2, H+, H2O, NH4, O2, and Pi:
             media = {'EX_glc__D_e': 10.0, 'EX_co2_e': inf, 'EX_h_e': inf, 'EX_h2o_e': inf, 'EX_nh4_e': inf, 'EX_o2_e': inf, 'EX_pi_e': inf}
-        fixed: A list of metabolites with fixed concentration (ex. low O2)
         """
-
         self._medias = [media]
-        if not fixed:
-            fixed = []
-        self._fixed = fixed
 
     @property
     def media(self):
@@ -32,22 +27,6 @@ class Media:
     @property
     def medias(self):
         return pd.DataFrame(self._medias).rename_axis(index='timestep', columns='reaction')
-
-    def useMedia(self, uptakes: dict):
-        "Adjust media by `uptakes`, a dictionary of metabolites and uptake concentrations"
-        new_concentrations = self.media.copy()
-
-        for m, u in uptakes.items():
-            if m in self._fixed:
-                new_c = self.media[m]
-            else:
-                new_c = self.media.get(m, 0) + u
-                if new_c < 0:
-                    new_c = 0
-            new_concentrations[m] = new_c
-        
-        # Append to `medias` list
-        self._medias.append(new_concentrations)
 
 
 class Strain:
@@ -84,6 +63,9 @@ class Experiment:
         # Warn if the experiment already has a solution
         if self.solution is not None:
             warnings.warn('There is already a solution saved to this experiment, running will overwrite those results')
+
+        # Change the media cobrapy is using to match what is in the experiment
+        self.model.medium = self.media
 
         # Solve FBA
         sol = self.strain.model.optimize()
