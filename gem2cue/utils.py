@@ -110,9 +110,14 @@ class Experiment:
         
         return ex_atoms
 
-    def rCUE(self, co2_rxn='EX_co2_e', ex_nomenclature = {'e'}, return_sol=False):
-        """ Calculate CUE, using the definition that respiration is the only waste,
-        uses the formula: CUE = 1 - CO2 / Uptake C
+    def CUE(self, co2_rxn='EX_co2_e', ex_nomenclature = {'e'}, definition = 'rCUE'):
+        """ Calculate CUE, rCUE uses the definition that respiration is the only waste,
+        uses the formula: CUE = 1 - CO2 / Uptake C. Any other definition will
+        compute GGE using the following definition
+
+                    sum(uptake C) - sum(secretion C)
+            GGE =  ----------------------------------
+                            sum(uptake C)
 
         Args:
             model (cobra.core.Model): A model that has already been read in
@@ -127,7 +132,7 @@ class Experiment:
                 outputs (List [int, cobra.core.Model.Solution]): The CUE and the
                 last obtained solution from optimizing the model stored in a list
         """
-        # Warn if the experiment already has a solution
+        # Warn if the experiment already has a CUE value
         if self.cue is not None:
             warnings.warn('There is already a cue value saved to this experiment, running will overwrite those results')
 
@@ -138,16 +143,23 @@ class Experiment:
         # Get C atoms for each exchange reaction
         ex_c_atoms = self._atomExchangeMetabolite(ex_nomenclatue=ex_nomenclature)
 
-        # Subset to uptake reactions (negative flux)
-        uptake_rxns = self.solution.fluxes[ex_c_atoms.keys()].pipe(lambda x: x[x<0]).index
-
-        # Calculate uptake C flux
-        uptake = sum([self.solution.get_primal_by_id(r) * ex_c_atoms[r] for r in uptake_rxns if r != co2_rxn])
-        if uptake == 0:
-            cue = None
+        # Calculate CUE using one of the following definitions
+        if definition == 'rCUE':
+            # Subset to uptake reactions (negative flux)
+            uptake_rxns = self.solution.fluxes[ex_c_atoms.keys()].pipe(lambda x: x[x<0]).index
+            # Calculate uptake C flux
+            uptake = sum([self.solution.get_primal_by_id(r) * ex_c_atoms[r] for r in uptake_rxns if r != co2_rxn])
+            if uptake == 0:
+                cue = None
+            else:
+                # Calculate CUE
+                cue = 1 - abs(self.solution.get_primal_by_id(co2_rxn) / uptake)
         else:
-            # Calculate CUE
-            cue = 1 - abs(self.solution.get_primal_by_id(co2_rxn) / uptake)
+            # Assume that the only other option is GGE
+            # Get C fluxes (flip signs so that uptake is positive)
+            c_ex_fluxes = np.array([self.solution.get_primal_by_id(r) * -c for r, c in ex_c_atoms.items()])
+            # Calculate GGE
+            cue = c_ex_fluxes.sum() / c_ex_fluxes[c_ex_fluxes > 0].sum()
 
         # Update the experiment with the results
         self.cue = cue
