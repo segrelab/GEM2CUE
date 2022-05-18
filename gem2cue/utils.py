@@ -48,6 +48,7 @@ class Media:
         # Append to `medias` list
         self._medias.append(new_concentrations)
 
+
 class Strain:
     "A model and it's associated metadata"
 
