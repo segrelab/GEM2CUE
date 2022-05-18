@@ -40,7 +40,7 @@ class Strain:
         genome_length:
         """
         self.name = name
-        self.model = model
+        self.model = model.copy()
         self.gc_content = gc_content
         self.genome_length = genome_length
 
