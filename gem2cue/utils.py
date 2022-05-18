@@ -4,6 +4,7 @@ from typing import List
 import cobra
 import numpy as np
 import pandas as pd
+import warnings
 
 
 class Media:
@@ -75,9 +76,25 @@ class Experiment:
         """
         self.strain = strain
         self.media = media
+        self.solution = None
+        self.cue = None
 
+    def run(self):
+        "Run FBA"
+        # Warn if the experiment already has a solution
+        if self.solution is not None:
+            warnings.warn('There is already a solution saved to this experiment, running will overwrite those results')
 
-    def atomExchangeMetabolite(self, atom = 'C', ex_nomenclatue = {'e'}):
+        # Solve FBA
+        sol = self.strain.model.optimize()
+
+        # Update the experiment object
+        self.solution = sol
+
+        # Update the solution in the 
+
+    def _atomExchangeMetabolite(self, atom = 'C', ex_nomenclatue = {'e'}):
+        # TODO: Infer the ex_nomenclature rather than forcing the user to provide it
         """Get number of carbon atoms associated with each exchange reaction
     
         Args:
@@ -95,3 +112,42 @@ class Experiment:
         ex_atoms = {r.id: m.elements[atom] for m in self.strain.model.metabolites for r in m.reactions if atom in m.elements if r.compartments == ex_nomenclatue}
         
         return ex_atoms
+
+    def rCUE(self, co2_rxn='EX_co2_e', ex_nomenclatue = {'e'}, return_sol=False):
+        """ Calculate CUE, using the definition that respiration is the only waste,
+        uses the formula: CUE = 1 - CO2 / Uptake C
+
+        Args:
+            model (cobra.core.Model): A model that has already been read in
+            co2_rxn (string): Name of the respiration reaction in the model
+            return_sol (boolean): Should the function output the FBA solution as
+                well, True to return, defaults to False
+
+        Returns:
+            if return_sol = False
+                outputs (int): The CUE value
+            if return_sol = True
+                outputs (List [int, cobra.core.Model.Solution]): The CUE and the
+                last obtained solution from optimizing the model stored in a list
+        """
+
+        # Get C atoms for each exchange reaction
+        ex_c_atoms = self._atomExchangeMetabolite(ex_nomenclatue=ex_nomenclatue)
+
+        # Subset to uptake reactions (negative flux)
+        uptake_rxns = sol.fluxes[ex_c_atoms.keys()].pipe(lambda x: x[x<0]).index
+
+        # Calculate uptake C flux
+        uptake = sum([sol.get_primal_by_id(r) * ex_c_atoms[r] for r in uptake_rxns if r != co2_rxn])
+        if uptake == 0:
+            cue = nan
+        else:
+            # Calculate CUE
+            cue = 1 - abs(sol.get_primal_by_id(co2_rxn) / uptake)
+
+        if return_sol:
+            outputs = cue, sol
+        else:
+            outputs = cue
+
+        return outputs
