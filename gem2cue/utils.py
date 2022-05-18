@@ -65,7 +65,15 @@ class Experiment:
             warnings.warn('There is already a solution saved to this experiment, running will overwrite those results')
 
         # Change the media cobrapy is using to match what is in the experiment
-        self.strain.model.medium = self.media
+        # Set everything in the model to 0, so if the metabolite is not in the
+        # Experiment's medium the model it won't be use
+        for key in self.strain.model.medium:
+            self.strain.model.medium[key] = 0
+        # For every metabolite in the medium, check if the model needs it and
+        # update the amount for it
+        for key, value in self.media.items():
+            if key in self.strain.model.medium.keys():
+                self.strain.model.medium[key] = value
 
         # Solve FBA
         sol = self.strain.model.optimize()
