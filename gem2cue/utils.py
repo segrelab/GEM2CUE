@@ -48,7 +48,7 @@ class Strain:
 class Experiment:
     "A collection of one strain in an environment"
 
-    def __init__(self, strain: Strain, media: Media):
+    def __init__(self, strain: Strain, media: Media = None):
         """
         organisms: A list of Organism(s)
         media: A `Media` object
@@ -64,16 +64,18 @@ class Experiment:
         if self.solution is not None:
             warnings.warn('There is already a solution saved to this experiment, running will overwrite those results')
 
-        # Change the media cobrapy is using to match what is in the experiment
-        # Set everything in the model to 0, so if the metabolite is not in the
-        # Experiment's medium the model it won't be use
-        for key in self.strain.model.medium:
-            self.strain.model.medium[key] = 0
-        # For every metabolite in the medium, check if the model needs it and
-        # update the amount for it
-        for key, value in self.media.items():
-            if key in self.strain.model.medium.keys():
-                self.strain.model.medium[key] = value
+        # If no media is defined run FBA unconstrained
+        # If there is a media, changed the COBRApy's medium to match
+        if self.media is not None:
+            # Set everything in the model to 0, so if the metabolite is not in the
+            # Experiment's medium the model it won't be use
+            for key in self.strain.model.medium:
+                self.strain.model.medium[key] = 0
+            # For every metabolite in the medium, check if the model needs it and
+            # update the amount for it
+            for key, value in self.media.items():
+                if key in self.strain.model.medium.keys():
+                    self.strain.model.medium[key] = value
 
         # Solve FBA
         sol = self.strain.model.optimize()
