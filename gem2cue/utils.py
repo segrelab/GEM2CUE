@@ -91,9 +91,7 @@ class Experiment:
         # Update the experiment object
         self.solution = sol
 
-        # Update the solution in the 
-
-    def _atomExchangeMetabolite(self, atom = 'C', ex_nomenclatue = {'e'}):
+    def _atomExchangeMetabolite(self, atom = 'C', ex_nomenclature = {'e'}):
         # TODO: Infer the ex_nomenclature rather than forcing the user to provide it
         """Get number of carbon atoms associated with each exchange reaction
     
@@ -105,15 +103,14 @@ class Experiment:
             ex_atoms (dict): Dictionary with the IDs as the rxn names, and the
                 values as the number of atoms associates
         """
-
         # FIXME: This is where the issue is
         # compartment for CarveMe models is C_e
         # Compartment for BiGG models is e
-        ex_atoms = {r.id: m.elements[atom] for m in self.strain.model.metabolites for r in m.reactions if atom in m.elements if r.compartments == ex_nomenclatue}
+        ex_atoms = {r.id: m.elements[atom] for m in self.strain.model.metabolites for r in m.reactions if atom in m.elements if r.compartments == ex_nomenclature}
         
         return ex_atoms
 
-    def rCUE(self, co2_rxn='EX_co2_e', ex_nomenclatue = {'e'}, return_sol=False):
+    def rCUE(self, co2_rxn='EX_co2_e', ex_nomenclature = {'e'}, return_sol=False):
         """ Calculate CUE, using the definition that respiration is the only waste,
         uses the formula: CUE = 1 - CO2 / Uptake C
 
@@ -130,24 +127,27 @@ class Experiment:
                 outputs (List [int, cobra.core.Model.Solution]): The CUE and the
                 last obtained solution from optimizing the model stored in a list
         """
+        # Warn if the experiment already has a solution
+        if self.cue is not None:
+            warnings.warn('There is already a cue value saved to this experiment, running will overwrite those results')
+
+        # If the experiment does not have a solution, run it
+        if self.solution is None:
+            self.run()
 
         # Get C atoms for each exchange reaction
-        ex_c_atoms = self._atomExchangeMetabolite(ex_nomenclatue=ex_nomenclatue)
+        ex_c_atoms = self._atomExchangeMetabolite(ex_nomenclatue=ex_nomenclature)
 
         # Subset to uptake reactions (negative flux)
-        uptake_rxns = sol.fluxes[ex_c_atoms.keys()].pipe(lambda x: x[x<0]).index
+        uptake_rxns = self.solution.fluxes[ex_c_atoms.keys()].pipe(lambda x: x[x<0]).index
 
         # Calculate uptake C flux
-        uptake = sum([sol.get_primal_by_id(r) * ex_c_atoms[r] for r in uptake_rxns if r != co2_rxn])
+        uptake = sum([self.solution.get_primal_by_id(r) * ex_c_atoms[r] for r in uptake_rxns if r != co2_rxn])
         if uptake == 0:
-            cue = nan
+            cue = None
         else:
             # Calculate CUE
-            cue = 1 - abs(sol.get_primal_by_id(co2_rxn) / uptake)
+            cue = 1 - abs(self.solution.get_primal_by_id(co2_rxn) / uptake)
 
-        if return_sol:
-            outputs = cue, sol
-        else:
-            outputs = cue
-
-        return outputs
+        # Update the experiment with the results
+        self.cue = cue
