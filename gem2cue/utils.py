@@ -65,7 +65,7 @@ class Experiment:
             warnings.warn('There is already a solution saved to this experiment, running will overwrite those results')
 
         # Change the media cobrapy is using to match what is in the experiment
-        self.model.medium = self.media
+        self.strain.model.medium = self.media
 
         # Solve FBA
         sol = self.strain.model.optimize()
