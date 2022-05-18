@@ -67,76 +67,12 @@ class Strain:
 class Experiment:
     "A collection of metabolic model(s) in an environment"
 
-    def __init__(self, organisms: List[Organism], media: Media, timepoints: int = 20, dt: float = 0.1):
+    def __init__(self, strains: List[Strain], media: Media):
         """
         organisms: A list of Organism(s)
         media: A `Media` object
-        timepoints: Number of timepoints in dFBA simulation
-        dt: Size of timestep for each timepoint
-        flux_parameters: Dictionary of vmax and km (default: {'vmax': 2.0, 'km': 0.5})
         """
-        if isinstance(organisms, Organism):
-            organisms = [organisms]
-        self.organisms = organisms
+        if isinstance(strains, Strain):
+            strains = [strains]
+        self.strains = strains
         self.Media = media
-        self.timepoints = timepoints
-        self.dt = dt
-
-        self._timestep = 0
-    
-    @property
-    def biomasses(self):
-        "Biomass of each Organism at each timestep"
-        return pd.concat([o.biomasses for o in self.organisms], axis=1).rename_axis(index='timestep', columns='organism')
-
-    def _dFBAstep(self, organism: Organism):
-        "A single step of dFBA for a single Organism including updates to metabolite concentrations in media"
-
-        "Update metabolite uptake rate given environment concentration"
-        # Calculate MM uptake rates for limiting nutrients
-        for reaction, concentration in self.Media.media.items():
-            if np.isfinite(concentration) & (reaction in organism._exchange_reaction_ids):
-                # Compute MM uptake rate for limiting nutrient
-                uptake_rate = organism.flux_parameters['vmax'] * concentration / (organism.flux_parameters['km'] + concentration)
-                # Impose rate as maximum uptake rate
-                organism.model.exchanges.get_by_id(reaction).lower_bound = -uptake_rate
-
-        "Compute SS FBA for this timepoint"
-        # Run FBA
-        solution = organism.model.optimize()
-        if solution.status == 'optimal':
-            # Growth rate
-            growth = solution.objective_value
-            organism.growth_rates.append(growth)
-            # Exchange fluxes
-            fluxes_now = solution.fluxes[organism._exchange_reaction_ids]
-            organism._fluxes.append(fluxes_now)
-        else:  
-            # If infeasible
-            if not organism.infeasible_timestep:
-                organism.infeasible_timestep = self._timestep
-            growth = 0
-            fluxes_now = pd.Series({m: 0 for m in self.Media.media})
-
-        "Update biomass and media concentrations"
-        # Update uptake concentrations in organism
-        uptake_concentrations_now = {}
-        for m, flux in fluxes_now.items():
-            if flux != 0:
-                # Calculate uptake concentration in Organism
-                uptake_concentration = flux * organism.biomass * self.dt
-                uptake_concentrations_now[m] = uptake_concentration
-        organism._uptake_concentrations.append(uptake_concentrations_now)
-        # Uptake concentrations in media
-        self.Media.useMedia(uptake_concentrations_now)
-
-        # Update biomass
-        biomass = organism.biomass + growth * organism.biomass * self.dt
-        organism._biomasses.append(biomass)
-
-    def dFBA(self):
-        "Run dFBA for all model(s)"
-        for t in range(self.timepoints):
-            self._timestep = t
-            for organism in self.organisms:
-                self._dFBAstep(organism)
