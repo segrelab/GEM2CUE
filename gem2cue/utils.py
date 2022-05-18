@@ -117,7 +117,7 @@ class Experiment:
             self.run()
 
         # Get C atoms for each exchange reaction
-        ex_c_atoms = self._atomExchangeMetabolite(ex_nomenclatue=ex_nomenclature)
+        ex_c_atoms = self._atomExchangeMetabolite(ex_nomenclature = ex_nomenclature)
 
         # Calculate CUE using one of the following definitions
         if definition == 'rCUE':
