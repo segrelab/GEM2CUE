@@ -74,10 +74,10 @@ class Experiment:
         media: A `Media` object
         """
         self.strain = strain
-        self.Media = media
+        self.media = media
 
 
-    def atomExchangeMetabolite(self, atom = 'C'):
+    def atomExchangeMetabolite(self, atom = 'C', ex_nomenclatue = {'e'}):
         """Get number of carbon atoms associated with each exchange reaction
     
         Args:
@@ -92,6 +92,6 @@ class Experiment:
         # FIXME: This is where the issue is
         # compartment for CarveMe models is C_e
         # Compartment for BiGG models is e
-        ex_atoms = {r.id: m.elements[atom] for m in self.strain.model.metabolites for r in m.reactions if atom in m.elements if r.compartments == {'e'}}
+        ex_atoms = {r.id: m.elements[atom] for m in self.strain.model.metabolites for r in m.reactions if atom in m.elements if r.compartments == ex_nomenclatue}
         
         return ex_atoms
