@@ -111,26 +111,20 @@ class Experiment:
         return ex_atoms
 
     def CUE(self, co2_rxn='EX_co2_e', ex_nomenclature = {'e'}, definition = 'rCUE'):
-        """ Calculate CUE, rCUE uses the definition that respiration is the only waste,
-        uses the formula: CUE = 1 - CO2 / Uptake C. Any other definition will
-        compute GGE using the following definition
+        """ Calculate CUE, rCUE uses assumes that respiration is the only waste,
+        using the formula: CUE = 1 - CO2 / Uptake C. Any other definition will
+        compute CUE as Gross Growth Efficiency using the following definition
 
                     sum(uptake C) - sum(secretion C)
-            GGE =  ----------------------------------
+            CUE =  ----------------------------------
                             sum(uptake C)
 
         Args:
-            model (cobra.core.Model): A model that has already been read in
-            co2_rxn (string): Name of the respiration reaction in the model
-            return_sol (boolean): Should the function output the FBA solution as
-                well, True to return, defaults to False
-
-        Returns:
-            if return_sol = False
-                outputs (int): The CUE value
-            if return_sol = True
-                outputs (List [int, cobra.core.Model.Solution]): The CUE and the
-                last obtained solution from optimizing the model stored in a list
+        self (Experiment): Experiment with the model/media to use
+        co2_rxn (string): Name of the respiration reaction in the model
+        ex_nomenclature (string): Nomenclature the model uses to denote exchange
+            reactions (BiGG uses 'e', CarveMe uses 'C_e')
+        definition (string): What definition to use
         """
         # Warn if the experiment already has a CUE value
         if self.cue is not None:
