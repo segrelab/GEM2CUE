@@ -132,9 +132,9 @@ class Experiment:
         # Calculate CUE using one of the following definitions
         if definition == 'rCUE':
             # Subset to uptake reactions (negative flux)
-            uptake_rxns = self.solution.fluxes[ex_c_atoms.keys()].pipe(lambda x: x[x<0]).index
+            # uptake_rxns = self.solution.fluxes[ex_c_atoms.keys()].pipe(lambda x: x[x<0]).index
             # Calculate uptake C flux
-            uptake = sum([self.solution.get_primal_by_id(r) * ex_c_atoms[r] for r in uptake_rxns if r != co2_rxn])
+            uptake = sum([self.solution.get_primal_by_id(r) * ex_c_atoms[r] for r in ex_c_atoms if r != co2_rxn])
             if uptake == 0:
                 cue = None
             else:
