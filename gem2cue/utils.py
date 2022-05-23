@@ -33,7 +33,7 @@ class Media:
 class Strain:
     "A model and it's associated metadata"
 
-    def __init__(self, name, model, gc_content, genome_length):
+    def __init__(self, name: str, model: cobra.core.Model, metadata: dict = None):
         """
         name:
         model:
@@ -42,8 +42,7 @@ class Strain:
         """
         self.name = name
         self.model = model.copy()
-        self.gc_content = gc_content
-        self.genome_length = genome_length
+        self.metadata = metadata
 
 
 class Experiment:
