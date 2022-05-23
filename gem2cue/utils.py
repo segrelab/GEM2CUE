@@ -13,21 +13,10 @@ class Media:
 
     def __init__(self, media: dict = None):
         """
-        media: A dictionary of cobrapy exchange reactions and starting concentration. 
-        | * LIMITING NUTRIENTS: Provide desired concentration
-        | * NON-LIMITING NUTRIENTS: Indicate with unlimited supply with `np.inf` and completely limited with `-np.inf`
-         Ex: Limited glucose with unlimited CO2, H+, H2O, NH4, O2, and Pi:
-            media = {'EX_glc__D_e': 10.0, 'EX_co2_e': inf, 'EX_h_e': inf, 'EX_h2o_e': inf, 'EX_nh4_e': inf, 'EX_o2_e': inf, 'EX_pi_e': inf}
+        media: A dictionary of cobrapy exchange reactions
         """
-        self._medias = [media]
+        self._medias = media
 
-    @property
-    def media(self):
-        return self._medias[-1]
-
-    @property
-    def medias(self):
-        return pd.DataFrame(self._medias).rename_axis(index='timestep', columns='reaction')
 
 
 class Strain:
