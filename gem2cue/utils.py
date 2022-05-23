@@ -18,7 +18,6 @@ class Media:
         self.media = media
 
 
-
 class Strain:
     "A model and it's associated metadata"
 
@@ -47,6 +46,12 @@ class Experiment:
         self.solution = None
         self.cue = None
 
+    def select_media(self):
+        "Select only the media components that the model can take up"
+        medium = self.media.media
+        clean_media = {i: v for i, v in medium.items() if i in self.strain.model.exchanges}
+        self.strain.model.medium = clean_media
+
     def run(self):
         "Run FBA"
         # Warn if the experiment already has a solution
@@ -56,15 +61,7 @@ class Experiment:
         # If no media is defined run FBA unconstrained
         # If there is a media, changed the COBRApy's medium to match
         if self.media is not None:
-            # Set everything in the model to 0, so if the metabolite is not in the
-            # Experiment's medium the model it won't be use
-            for key in self.strain.model.medium:
-                self.strain.model.medium[key] = 0
-            # For every metabolite in the medium, check if the model needs it and
-            # update the amount for it
-            for key, value in self.media.media.items():
-                if key in self.strain.model.medium.keys():
-                    self.strain.model.medium[key] = value
+            self.select_media()
 
         # Solve FBA
         sol = self.strain.model.optimize()
