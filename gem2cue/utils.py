@@ -15,7 +15,7 @@ class Media:
         """
         media: A dictionary of cobrapy exchange reactions
         """
-        self._medias = media
+        self.media = media
 
 
 
@@ -62,7 +62,7 @@ class Experiment:
                 self.strain.model.medium[key] = 0
             # For every metabolite in the medium, check if the model needs it and
             # update the amount for it
-            for key, value in self.media.items():
+            for key, value in self.media.media.items():
                 if key in self.strain.model.medium.keys():
                     self.strain.model.medium[key] = value
 
