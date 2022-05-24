@@ -32,6 +32,10 @@ class Strain:
         self.model = model.copy()
         self.metadata = metadata
 
+    def update_medium(self, new_medium: Media):
+        clean_media = {i: v for i, v in new_medium.items() if i in self.strain.model.exchanges}
+        self.model.medium = clean_media
+
 
 class Experiment:
     "A collection of one strain in an environment"
@@ -39,29 +43,18 @@ class Experiment:
     def __init__(self, strain: Strain, media: Media = None):
         """
         organisms: A list of Organism(s)
-        media: A `Media` object
+        solution
+        cue
         """
         self.strain = strain
-        self.media = media
         self.solution = None
         self.cue = None
-
-    def select_media(self):
-        "Select only the media components that the model can take up"
-        medium = self.media.media
-        clean_media = {i: v for i, v in medium.items() if i in self.strain.model.exchanges}
-        self.strain.model.medium = clean_media
 
     def run(self):
         "Run FBA"
         # Warn if the experiment already has a solution
         if self.solution is not None:
             warnings.warn('There is already a solution saved to this experiment, running will overwrite those results')
-
-        # If no media is defined run FBA unconstrained
-        # If there is a media, changed the COBRApy's medium to match
-        if self.media is not None:
-            self.select_media()
 
         # Solve FBA
         sol = self.strain.model.optimize()
