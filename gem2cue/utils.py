@@ -33,7 +33,7 @@ class Strain:
         self.metadata = metadata
 
     def update_medium(self, new_medium: Media):
-        clean_media = {i: v for i, v in new_medium.items() if i in self.strain.model.exchanges}
+        clean_media = {i: v for i, v in new_medium.media.items() if i in self.model.exchanges}
         self.model.medium = clean_media
 
 
