@@ -40,7 +40,7 @@ class Strain:
 class Experiment:
     "A collection of one strain in an environment"
 
-    def __init__(self, strain: Strain, media: Media = None):
+    def __init__(self, strain: Strain):
         """
         organisms: A list of Organism(s)
         solution
