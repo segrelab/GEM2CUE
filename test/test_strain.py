@@ -2,14 +2,10 @@ import unittest
 import os
 import cobra
 
-<<<<<<< HEAD
 cobra_config = cobra.Configuration()
 cobra_config.solver = "glpk_exact"
 
-import gem2cue.strain
-=======
 import gem2cue.utils
->>>>>>> develop
 
 class TestStrain(unittest.TestCase):
     def test_strain(self):
