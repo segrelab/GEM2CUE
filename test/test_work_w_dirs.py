@@ -1,6 +1,10 @@
 import unittest
 import os
 
+import cobra
+cobra_config = cobra.Configuration()
+cobra_config.solver = "glpk_exact"
+
 import gem2cue.work_w_dirs
 
 TEST_DIR = os.path.dirname(os.path.realpath(__file__))

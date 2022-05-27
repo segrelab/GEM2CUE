@@ -2,6 +2,10 @@ import unittest
 import os
 import shutil
 
+import cobra
+cobra_config = cobra.Configuration()
+cobra_config.solver = "glpk_exact"
+
 import gem2cue.pipeline
 
 TEST_DIR = os.path.dirname(os.path.realpath(__file__))

@@ -2,6 +2,9 @@ import unittest
 import os
 import cobra
 
+cobra_config = cobra.Configuration()
+cobra_config.solver = "glpk_exact"
+
 import gem2cue.strain
 
 class TestStrain(unittest.TestCase):
