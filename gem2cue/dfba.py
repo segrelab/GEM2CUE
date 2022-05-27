@@ -22,9 +22,15 @@ class Timecourse:
     Modeling CUE of a strain or community over time with surfinFBA
 
     Inputs:
-    | strains <list>: List of Strains
-    | x0 <list or dict>: Initial biomass for each Strain
-    | y0
+    | strains <list>: List of Strain objects
+    | prep_kwargs <dict>: Keyword arguments to pass to `prep_cobrapy_models()` from surfinFBA
+        * See bottom of: https://github.com/jdbrunner/surfin_fba
     """
-    def __init__(self, strains: List[Strain], x0: dict, endtime, y0: dict=None, met_in=None, met_out=None, metabolite_names=[], report_activity=False, detail_activity=False, initres=0.001, concurrent=True, solver='both',  enoughalready=10, flobj=None, chk_round=5):
-        self.model_dict = {s.name: s.model for s in strains}
+    def __init__(self, strains: List[Strain], init_strain_biomasses: Union[list, dict], ):
+        # Check that an 'e' compartment is in the model
+        for s in strains:
+            if 'e' not in s.model.compartments:
+                raise KeyError('An extracellular compartment, "e" must be defined in each model.')
+        
+        self.strains = strains
+        self.strain_dict = {s.name: s.model for s in self.strains}

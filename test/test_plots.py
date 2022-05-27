@@ -6,6 +6,10 @@ import cobra
 import gem2cue.plots
 import gem2cue.work_w_dirs
 
+import cobra
+cobra_config = cobra.Configuration()
+cobra_config.solver = "glpk_exact"
+
 TEST_DIR = os.path.dirname(os.path.realpath(__file__))
 OUT_DIR = os.path.join(TEST_DIR, 'test_results')
 

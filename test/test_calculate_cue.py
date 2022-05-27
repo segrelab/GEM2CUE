@@ -2,6 +2,9 @@ import unittest
 import os
 import cobra
 
+cobra_config = cobra.Configuration()
+cobra_config.solver = "glpk_exact"
+
 import gem2cue.calculate_cue
 
 class TestCalculateCUE(unittest.TestCase):
@@ -16,7 +19,7 @@ class TestCalculateCUE(unittest.TestCase):
 
         # Make sure that what came out is exactly what expected
         comparison_value = 0.6198361114965837
-        self.assertEqual(out_value, comparison_value)
+        self.assertAlmostEqual(out_value, comparison_value)
 
 
     def test_atomExchangeMetabolite(self):
@@ -58,7 +61,7 @@ class TestCalculateCUE(unittest.TestCase):
 
         # Make sure that what came out is exactly what expected
         comparison_value = 0.6198361114965837
-        self.assertEqual(out_value, comparison_value)
+        self.assertAlmostEqual(out_value, comparison_value)
 
 
 if __name__ == '__main__':
