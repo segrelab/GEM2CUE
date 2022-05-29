@@ -2,6 +2,9 @@ import unittest
 import os
 import cobra
 
+cobra_config = cobra.Configuration()
+cobra_config.solver = "glpk_exact"
+
 import gem2cue.calculate_cue
 
 class TestCalculateCUE(unittest.TestCase):
@@ -16,7 +19,7 @@ class TestCalculateCUE(unittest.TestCase):
 
         # Make sure that what came out is exactly what expected
         comparison_value = 0.6198361114965837
-        self.assertEqual(out_value, comparison_value)
+        self.assertAlmostEqual(out_value, comparison_value)
 
 
     def test_atomExchangeMetabolite(self):
@@ -45,6 +48,21 @@ class TestCalculateCUE(unittest.TestCase):
                             'EX_pyr_e': 3,
                             'EX_succ_e': 4}
         self.assertEqual(out_value, comparison_value)
+
+    
+    def test_calculate_gge(self):
+        """Test GGE Calculations"""
+        # Read in the file to test on
+        test_dir = os.path.dirname(os.path.realpath(__file__))
+        model = cobra.io.read_sbml_model(os.path.join(test_dir, 'test_files', 'EC_core_flux1.xml'))
+
+        # Call the function
+        out_value = gem2cue.calculate_cue.GGE(model, return_sol=False)
+
+        # Make sure that what came out is exactly what expected
+        comparison_value = 0.6198361114965837
+        self.assertAlmostEqual(out_value, comparison_value)
+
 
 if __name__ == '__main__':
     unittest.main()
