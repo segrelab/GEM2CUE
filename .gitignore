@@ -3,3 +3,4 @@ __pycache__
 *.pyc
 *.ipynb_checkpoints
 GEM2CUE.egg-info
+build/lib/gem2cue/__init__.py
