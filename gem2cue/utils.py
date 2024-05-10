@@ -1,7 +1,8 @@
-import pandas as pd
 import cobra
+import pandas as pd
 
-def get_c_ex_rxns(model, atom = 'C'):
+
+def get_c_ex_rxns(model, atom="C"):
     # TODO: Infer the ex_nomenclature rather than forcing the user to provide it
     """Get number of carbon atoms associated with each exchange reaction
 
@@ -16,9 +17,11 @@ def get_c_ex_rxns(model, atom = 'C'):
     """
     # This assumes that there is only ever one reactant in an exchange
     # reaction
-    ex_atoms = {ex_rxn.id: ex_rxn.reactants[0].elements[atom] for 
-                ex_rxn in model.exchanges
-                if atom in ex_rxn.reactants[0].elements}
+    ex_atoms = {
+        ex_rxn.id: ex_rxn.reactants[0].elements[atom]
+        for ex_rxn in model.exchanges
+        if atom in ex_rxn.reactants[0].elements
+    }
 
     return ex_atoms
 
@@ -42,41 +45,58 @@ def get_c_ex_rxn_fluxes(model, solution, c_ex_rxns, biomass_rxn: str, tool_used)
     """
     # Check that the tool used matches with the expected type of the
     # solution object
-    if tool_used.lower() != 'comets' and tool_used.lower() != 'cobrapy':
-        raise ValueError('Function does not recognize the value supplied ' +
-                         'for `tool_used`. Select from `COMETS` or `COBRApy`' +
-                         ' (capitalization does not matter). You supplied ' +
-                         tool_used + '.')
-    if tool_used.lower() == 'comets' and not isinstance(solution, pd.Series):
-        raise ValueError('Function was expecting results from a COMETS' +
-                         'simulation as a pandas.Series object, but was ' +
-                         'given the solution as a ' + type(solution) +
-                         'object.')
-    if tool_used.lower() == 'cobrapy' and not isinstance(solution, cobra.Solution):
-        raise ValueError('Function was expecting results from a COBRApy' +
-                         'simulation as a cobra.Solution object, but was ' +
-                         'given the solution as a ' + type(solution) +
-                         'object.')
+    if tool_used.lower() != "comets" and tool_used.lower() != "cobrapy":
+        raise ValueError(
+            "Function does not recognize the value supplied "
+            + "for `tool_used`. Select from `COMETS` or `COBRApy`"
+            + " (capitalization does not matter). You supplied "
+            + tool_used
+            + "."
+        )
+    if tool_used.lower() == "comets" and not isinstance(solution, pd.Series):
+        raise ValueError(
+            "Function was expecting results from a COMETS"
+            + "simulation as a pandas.Series object, but was "
+            + "given the solution as a "
+            + type(solution)
+            + "object."
+        )
+    if tool_used.lower() == "cobrapy" and not isinstance(solution, cobra.Solution):
+        raise ValueError(
+            "Function was expecting results from a COBRApy"
+            + "simulation as a cobra.Solution object, but was "
+            + "given the solution as a "
+            + type(solution)
+            + "object."
+        )
 
     # Make a dictionary of all carbon atom fluxes (reaction flux * number of
     # carbon atoms). Have to access the fluxes differently if the results are
     # from COMETS or COBRApy.
-    if tool_used.lower() == 'comets':
-        c_ex_fluxes = {rxn_id: float(solution[rxn_id]) * n_atoms
-                       for rxn_id, n_atoms in c_ex_rxns.items()}
-    if tool_used.lower() == 'cobrapy':
-        c_ex_fluxes = {rxn_id: solution.fluxes[rxn_id] * n_atoms
-                       for rxn_id, n_atoms in c_ex_rxns.items()}
+    if tool_used.lower() == "comets":
+        c_ex_fluxes = {
+            rxn_id: float(solution[rxn_id]) * n_atoms
+            for rxn_id, n_atoms in c_ex_rxns.items()
+        }
+    if tool_used.lower() == "cobrapy":
+        c_ex_fluxes = {
+            rxn_id: solution.fluxes[rxn_id] * n_atoms
+            for rxn_id, n_atoms in c_ex_rxns.items()
+        }
 
     # Set the signs for the uptake and secretion
 
     # Separate the uptake and secretion fluxes based on the sign
-    uptake = {rxn_id: abs(atom_flux)
-              for rxn_id, atom_flux in c_ex_fluxes.items()
-              if atom_flux < 0}
-    secretion = {rxn_id: abs(atom_flux)
-                 for rxn_id, atom_flux in c_ex_fluxes.items()
-                 if atom_flux > 0}
+    uptake = {
+        rxn_id: abs(atom_flux)
+        for rxn_id, atom_flux in c_ex_fluxes.items()
+        if atom_flux < 0
+    }
+    secretion = {
+        rxn_id: abs(atom_flux)
+        for rxn_id, atom_flux in c_ex_fluxes.items()
+        if atom_flux > 0
+    }
 
     # Get the biomass reaction C-atom flux
     biomass = get_biomass_carbon(solution, biomass_rxn, model, tool_used)
@@ -84,7 +104,7 @@ def get_c_ex_rxn_fluxes(model, solution, c_ex_rxns, biomass_rxn: str, tool_used)
     return uptake, secretion, biomass
 
 
-def get_co2_secretion(secretion_fluxes, co2_ex_rxn = 'EX_co2_e'):
+def get_co2_secretion(secretion_fluxes, co2_ex_rxn="EX_co2_e"):
     """Get the total number of carbon atoms lost from the cell as CO2
 
     Args:
@@ -97,7 +117,7 @@ def get_co2_secretion(secretion_fluxes, co2_ex_rxn = 'EX_co2_e'):
     Returns:
     co2_flux (float): Numeric value for the carbon atom flux for CO2
         secretion
-    
+
     """
     if co2_ex_rxn not in secretion_fluxes.keys():
         co2_flux = 0
@@ -124,7 +144,7 @@ def comets_atom_fluxes(comets_row, c_ex_rxns: dict):
     return uptake_atom_fluxes, excretion_atom_fluxes
 
 
-def get_org_c_secretion(secretion_fluxes, co2_ex_rxn = 'EX_co2_e'):
+def get_org_c_secretion(secretion_fluxes, co2_ex_rxn="EX_co2_e"):
     """Get the total number of carbon atoms lost from the cell as
     organic carbon
 
@@ -139,9 +159,13 @@ def get_org_c_secretion(secretion_fluxes, co2_ex_rxn = 'EX_co2_e'):
     org_c_secretion_flux (float): Numeric value for the carbon atom flux
         for all secretion reactions other than CO2.
     """
-    org_c_secretion_flux = sum([abs(c_atom_flux)
-                                for rxn, c_atom_flux in secretion_fluxes.items()
-                                if rxn != co2_ex_rxn])
+    org_c_secretion_flux = sum(
+        [
+            abs(c_atom_flux)
+            for rxn, c_atom_flux in secretion_fluxes.items()
+            if rxn != co2_ex_rxn
+        ]
+    )
 
     return org_c_secretion_flux
 
@@ -159,13 +183,12 @@ def get_c_uptake(uptake_fluxes):
     uptake_flux (float): Numeric value for the total carbon atom flux
         for all import reactions
     """
-    uptake_flux = sum([abs(c_atom_flux)
-                       for rxn, c_atom_flux in uptake_fluxes.items()])
+    uptake_flux = sum([abs(c_atom_flux) for rxn, c_atom_flux in uptake_fluxes.items()])
 
     return uptake_flux
 
 
-def get_biomass_carbon(solution, biomass_rxn, model, tool_used = 'COMETS'):
+def get_biomass_carbon(solution, biomass_rxn, model, tool_used="COMETS"):
     """Get the total number of carbon atoms used by the biomass reaction
 
     Args:
@@ -176,30 +199,39 @@ def get_biomass_carbon(solution, biomass_rxn, model, tool_used = 'COMETS'):
         "COMETS" or "COBRApy" (Capitalization does not matter).
 
     Returns:
-    
+
     """
     # Check that the tool used matches with the expected type of the
     # solution object
-    if tool_used.lower() != 'comets' and tool_used.lower() != 'cobrapy':
-        raise ValueError('Function does not recognize the value supplied ' +
-                         'for `tool_used`. Select from `COMETS` or `COBRApy`' +
-                         ' (capitalization does not matter). You supplied ' +
-                         tool_used + '.')
-    if tool_used.lower() == 'comets' and not isinstance(solution, pd.Series):
-        raise ValueError('Function was expecting results from a COMETS' +
-                         'simulation as a pandas.Series object, but was ' +
-                         'given the solution as a ' + type(solution) +
-                         'object.')
-    if tool_used.lower() == 'cobrapy' and not isinstance(solution, cobra.Solution):
-        raise ValueError('Function was expecting results from a COBRApy' +
-                         'simulation as a cobra.Solution object, but was ' +
-                         'given the solution as a ' + type(solution) +
-                         'object.')
+    if tool_used.lower() != "comets" and tool_used.lower() != "cobrapy":
+        raise ValueError(
+            "Function does not recognize the value supplied "
+            + "for `tool_used`. Select from `COMETS` or `COBRApy`"
+            + " (capitalization does not matter). You supplied "
+            + tool_used
+            + "."
+        )
+    if tool_used.lower() == "comets" and not isinstance(solution, pd.Series):
+        raise ValueError(
+            "Function was expecting results from a COMETS"
+            + "simulation as a pandas.Series object, but was "
+            + "given the solution as a "
+            + type(solution)
+            + "object."
+        )
+    if tool_used.lower() == "cobrapy" and not isinstance(solution, cobra.Solution):
+        raise ValueError(
+            "Function was expecting results from a COBRApy"
+            + "simulation as a cobra.Solution object, but was "
+            + "given the solution as a "
+            + type(solution)
+            + "object."
+        )
 
     # Get the flux through the biomass reaction
-    if tool_used.lower() == 'comets':
+    if tool_used.lower() == "comets":
         rxn_flux = solution[biomass_rxn]
-    if tool_used.lower() == 'cobrapy':
+    if tool_used.lower() == "cobrapy":
         rxn_flux = solution.fluxes[biomass_rxn]
 
     # Get the actual reaction object for the biomass reaction
@@ -208,24 +240,24 @@ def get_biomass_carbon(solution, biomass_rxn, model, tool_used = 'COMETS'):
     c_atom_flux = 0
     # Loop through all of the biomass components
     for component, s_coeff in rxn_obj.metabolites.items():
-        print('--------------\n' + component.name + '\nCoeff: ' + str(s_coeff))
+        print("--------------\n" + component.name + "\nCoeff: " + str(s_coeff))
         # If the component does not contain carbon, skip it
-        if 'C' not in component.elements.keys():
+        if "C" not in component.elements.keys():
             continue
         # Get the number of carbon atoms in the component
-        n_c_atoms = component.elements['C']
-        print('num. C atoms: ' + str(n_c_atoms))
+        n_c_atoms = component.elements["C"]
+        print("num. C atoms: " + str(n_c_atoms))
         # Multiply the number of carbon atoms by the stoichiometric coefficient
         component_flux = n_c_atoms * s_coeff
         # Add the flux to the total c_atom_flux
         c_atom_flux += component_flux
-        print('new atom flux: ' + str(c_atom_flux))
+        print("new atom flux: " + str(c_atom_flux))
 
-    # The final c atom flux is the 
+    # The final c atom flux is the
     return abs(c_atom_flux * rxn_flux)
 
 
-def calculate_cue(uptake_fluxes, secretion_fluxes, co2_ex_rxn = 'EX_co2_e'):
+def calculate_cue(uptake_fluxes, secretion_fluxes, co2_ex_rxn="EX_co2_e"):
     """Calculate the CUE by using the uptake and secretion dictionaries
 
     Args:
@@ -240,19 +272,19 @@ def calculate_cue(uptake_fluxes, secretion_fluxes, co2_ex_rxn = 'EX_co2_e'):
 
     Returns:
     cue (float): CUE value
-    
+
     """
     uptake = get_c_uptake(uptake_fluxes)
     co2_ex = get_co2_secretion(secretion_fluxes, co2_ex_rxn)
     if uptake == 0:
         cue = None
     else:
-        cue = 1 - co2_ex/uptake
-    
+        cue = 1 - co2_ex / uptake
+
     return cue
 
 
-def calculate_gge(uptake_fluxes, secretion_fluxes, co2_ex_rxn = 'EX_co2_e'):
+def calculate_gge(uptake_fluxes, secretion_fluxes, co2_ex_rxn="EX_co2_e"):
     """Calculate the GGE by using the uptake and secretion dictionaries
 
     Args:
@@ -275,18 +307,19 @@ def calculate_gge(uptake_fluxes, secretion_fluxes, co2_ex_rxn = 'EX_co2_e'):
     if uptake == 0:
         gge = None
     else:
-        gge = 1 - release/uptake
-    
+        gge = 1 - release / uptake
+
     return gge
 
 
-def calculate_bge(secretion_fluxes: dict, biomass_c: float,
-                  co2_ex_rxn: str = 'EX_co2_e'):
+def calculate_bge(
+    secretion_fluxes: dict, biomass_c: float, co2_ex_rxn: str = "EX_co2_e"
+):
     """Calculate the BGE by using the uptake and secretion dictionaries.
     BGE (Bacterial Growth Efficiecny) was defined by Zac as the fraction
     of carbon that is used for growth from the total carbon that is used
     for growth and respiration:
-    
+
     BGE = growth/(growth + respiration)
 
     Args:
@@ -302,17 +335,17 @@ def calculate_bge(secretion_fluxes: dict, biomass_c: float,
     bge (float): BGE value
     """
     co2_ex = get_co2_secretion(secretion_fluxes, co2_ex_rxn)
-    bge = biomass_c/(biomass_c + co2_ex)
+    bge = biomass_c / (biomass_c + co2_ex)
     return bge
 
 
-def extract_c_fates(secretion_fluxes, uptake_fluxes = None,
-                    co2_ex_rxn = 'EX_co2_e',
-                    norm = False):
+def extract_c_fates(
+    secretion_fluxes, uptake_fluxes=None, co2_ex_rxn="EX_co2_e", norm=False
+):
     """Extract the carbon atom flux going to each possible destination.
     These fluxes can the absolute value or can be normalized to the
     uptake flux.
-    
+
     Args:
     secretion_fluxes (dict): Dictionary of carbon secreting reactions
         with the reaction ID and the absolute value of the carbon atom
@@ -326,18 +359,20 @@ def extract_c_fates(secretion_fluxes, uptake_fluxes = None,
         flux? Defaults to false.
 
     Returns:
-    
+
     """
     # If you want normalized fates, you must supply the uptake flux dictionary
     if norm == True and uptake_fluxes is None:
-        raise ValueError('In order to calculate normalized carbon fates, ' +
-                         'you must supple an uptake flux dictionary.')
+        raise ValueError(
+            "In order to calculate normalized carbon fates, "
+            + "you must supple an uptake flux dictionary."
+        )
 
     # Get the absolute values for the fate fluxes
     co2_ex = get_co2_secretion(secretion_fluxes, co2_ex_rxn)
     org_c_ex = get_org_c_secretion(secretion_fluxes, co2_ex_rxn)
     biomass_c = get_biomass_carbon()
-    
+
     # Normalize everything to the uptake or not
     if norm == True:
         uptake = get_c_uptake(uptake_fluxes)
@@ -346,28 +381,44 @@ def extract_c_fates(secretion_fluxes, uptake_fluxes = None,
             co2_ex_norm = 0
             biomass_norm = 0
         else:
-            co2_ex_norm = co2_ex/uptake
-            exudation_norm = org_c_ex/uptake
-            biomass_norm = biomass_c/uptake
+            co2_ex_norm = co2_ex / uptake
+            exudation_norm = org_c_ex / uptake
+            biomass_norm = biomass_c / uptake
         return [co2_ex_norm, exudation_norm, biomass_norm]
     else:
         return [co2_ex, org_c_ex, biomass_c]
 
 
-def extract_c_fates_from_solution(solution, c_ex_rxns, co2_ex_rxn = 'EX_co2_e', norm = True):
+def extract_c_fates_from_solution(
+    solution, c_ex_rxns, co2_ex_rxn="EX_co2_e", norm=True
+):
     # TODO: Document this function
     # Get the exchange fluxes for the current cycle
     c_ex_fluxes = {r: solution.fluxes[r] * c for r, c in c_ex_rxns.items()}
     # Use the exchange fluxes to calculate uptake, resp, and exudation
-    uptake = sum([flux for rxn, flux in c_ex_fluxes.items() if flux < 0
-                  and rxn != co2_ex_rxn]) # Should I count the co2_ex_rxn here?
+    uptake = abs(
+        sum(
+            [
+                flux
+                for rxn, flux in c_ex_fluxes.items()
+                if flux < 0 and rxn != co2_ex_rxn
+            ]
+        )
+    )  # Should I count the co2_ex_rxn here?
     if c_ex_fluxes[co2_ex_rxn] < 0:
         # If the co2 flux is negative than the model is taking up CO2???
         co2_ex = 0
     else:
         co2_ex = c_ex_fluxes[co2_ex_rxn]
-    exudation = abs(sum([flux for rxn, flux in c_ex_fluxes.items()
-                         if flux > 0 and rxn != co2_ex_rxn]))
+    exudation = abs(
+        sum(
+            [
+                flux
+                for rxn, flux in c_ex_fluxes.items()
+                if flux > 0 and rxn != co2_ex_rxn
+            ]
+        )
+    )
     # Calculate the biomass as everything that is not uptake or co2 release
     biomass = abs(uptake) - co2_ex - exudation
     # Normalize everything to the uptake or not
@@ -377,10 +428,9 @@ def extract_c_fates_from_solution(solution, c_ex_rxns, co2_ex_rxn = 'EX_co2_e', 
             exudation_norm = 0
             biomass_norm = 0
         else:
-            co2_release_norm = co2_ex/uptake
-            exudation_norm = exudation/uptake
-            biomass_norm = biomass/uptake
+            co2_release_norm = co2_ex / uptake
+            exudation_norm = exudation / uptake
+            biomass_norm = biomass / uptake
         return [co2_release_norm, exudation_norm, biomass_norm]
     else:
-        return [abs(uptake), co2_ex, exudation, biomass]
-    
+        return [uptake, co2_ex, exudation, biomass]
