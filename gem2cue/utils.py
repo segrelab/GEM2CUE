@@ -199,7 +199,8 @@ def get_biomass_carbon(solution, biomass_rxn, model, tool_used="COMETS"):
         "COMETS" or "COBRApy" (Capitalization does not matter).
 
     Returns:
-
+    (float): Numeric value for the total carbon atom flux
+        for the biomass reaction
     """
     # Check that the tool used matches with the expected type of the
     # solution object
@@ -240,20 +241,18 @@ def get_biomass_carbon(solution, biomass_rxn, model, tool_used="COMETS"):
     c_atom_flux = 0
     # Loop through all of the biomass components
     for component, s_coeff in rxn_obj.metabolites.items():
-        print("--------------\n" + component.name + "\nCoeff: " + str(s_coeff))
         # If the component does not contain carbon, skip it
         if "C" not in component.elements.keys():
             continue
         # Get the number of carbon atoms in the component
         n_c_atoms = component.elements["C"]
-        print("num. C atoms: " + str(n_c_atoms))
         # Multiply the number of carbon atoms by the stoichiometric coefficient
         component_flux = n_c_atoms * s_coeff
         # Add the flux to the total c_atom_flux
         c_atom_flux += component_flux
-        print("new atom flux: " + str(c_atom_flux))
 
-    # The final c atom flux is the
+    # The final c atom flux is the product of the reaction flux and the
+    # total number of carbon atoms in 1 mmol (1 g) of biomass
     return abs(c_atom_flux * rxn_flux)
 
 
@@ -405,11 +404,7 @@ def extract_c_fates_from_solution(
             ]
         )
     )  # Should I count the co2_ex_rxn here?
-    if c_ex_fluxes[co2_ex_rxn] < 0:
-        # If the co2 flux is negative than the model is taking up CO2???
-        co2_ex = 0
-    else:
-        co2_ex = c_ex_fluxes[co2_ex_rxn]
+    co2_ex = c_ex_fluxes[co2_ex_rxn]
     exudation = abs(
         sum(
             [
