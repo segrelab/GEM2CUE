@@ -188,13 +188,13 @@ def get_c_uptake(uptake_fluxes):
     return uptake_flux
 
 
-def get_biomass_carbon(solution, biomass_rxn, model, tool_used="COMETS"):
+def get_biomass_carbon(solution, biomass_rxn, mol_c, tool_used="COMETS"):
     """Get the total number of carbon atoms used by the biomass reaction
 
     Args:
     solution (pd.Series OR cobra.Solution): Results from FBA
     biomass_rxn (str): Reaction ID for the biomass reaction
-    model (cobra.Model): COBRA model used
+    mol_c (float): Number of carbon atoms in 1 mmol (1 g) of biomass  CHECK UNITS!!!
     tool_used (str): Which tool was used to run FBA. Options are
         "COMETS" or "COBRApy" (Capitalization does not matter).
 
@@ -235,25 +235,9 @@ def get_biomass_carbon(solution, biomass_rxn, model, tool_used="COMETS"):
     if tool_used.lower() == "cobrapy":
         rxn_flux = solution.fluxes[biomass_rxn]
 
-    # Get the actual reaction object for the biomass reaction
-    rxn_obj = model.reactions.get_by_id(biomass_rxn)
-
-    c_atom_flux = 0
-    # Loop through all of the biomass components
-    for component, s_coeff in rxn_obj.metabolites.items():
-        # If the component does not contain carbon, skip it
-        if "C" not in component.elements.keys():
-            continue
-        # Get the number of carbon atoms in the component
-        n_c_atoms = component.elements["C"]
-        # Multiply the number of carbon atoms by the stoichiometric coefficient
-        component_flux = n_c_atoms * s_coeff
-        # Add the flux to the total c_atom_flux
-        c_atom_flux += component_flux
-
     # The final c atom flux is the product of the reaction flux and the
     # total number of carbon atoms in 1 mmol (1 g) of biomass
-    return abs(c_atom_flux * rxn_flux)
+    return abs(mol_c * rxn_flux)
 
 
 def calculate_cue(uptake_fluxes, secretion_fluxes, co2_ex_rxn="EX_co2_e"):
